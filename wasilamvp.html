@@ -1,0 +1,1999 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5B2FCB">
+<title>Wasila</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone-width column (max 480px) with a sticky top bar and a fixed bottom tab bar.
+   White and purple, light only by choice. Big tap targets and plain words throughout. */
+:root {
+  --white: #FFFFFF;
+  --purple: #5B2FCB;
+  --purple-dark: #43209A;
+  --purple-soft: #F3EFFE;
+  --line: #E6E0F5;
+  --hair: #EFEBF8;
+  --tint: #FAF8FF;
+  --ink: #1C1530;
+  --muted: #5E5674;
+  --faint: #8A82A0;
+  --green: #1F7A3E;
+  --green-soft: #E7F5EB;
+  --red: #A12F2F;
+  --star: #E3A21A;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: Figtree, "Segoe UI", system-ui, sans-serif;
+  --col: 480px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; }
+body { background: #EEE9FA; color: var(--ink); font: 17px/1.5 var(--font-body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--white); }
+.app { max-width: var(--col); margin: 0 auto; min-height: 100vh; background: var(--white); display: flex; flex-direction: column; box-shadow: 0 0 0 1px var(--hair); }
+@media (max-width: 480px) { body { background: var(--white); } .app { box-shadow: none; } }
+
+/* Top bar */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--white); border-bottom: 1px solid var(--hair);
+  display: flex; align-items: center; gap: 10px; min-height: 64px;
+  padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); }
+.top h1 { font-family: var(--font-display); font-weight: 700; font-size: 21px; letter-spacing: -.01em; margin: 0; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.logo { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.logo b { font-family: var(--font-display); font-size: 23px; letter-spacing: -.02em; }
+.icon-btn { flex: none; width: 48px; height: 48px; border-radius: 14px; border: 1px solid var(--line); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink); padding: 0; }
+.chip-btn { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); font: 600 15px var(--font-body); color: var(--ink); cursor: pointer; }
+
+/* Content */
+main { flex: 1; padding: 18px max(16px, env(safe-area-inset-right, 0px)) 120px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 24px; }
+main.no-tabs { padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)); }
+h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
+.h-xl { font-size: 30px; line-height: 1.1; }
+.h-l { font-size: 23px; line-height: 1.15; }
+.h-m { font-size: 19px; line-height: 1.2; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 15px; }
+.tiny { font-size: 13.5px; }
+.label { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.row { display: flex; align-items: center; gap: 12px; }
+.between { justify-content: space-between; }
+.wrap { flex-wrap: wrap; }
+.grow { flex: 1; min-width: 0; }
+.section { display: flex; flex-direction: column; gap: 12px; }
+
+/* Buttons and inputs */
+button { font: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 56px; padding: 12px 18px; border-radius: 16px; border: 0;
+  background: var(--purple); color: var(--white); font: 700 17px/1.2 var(--font-body); cursor: pointer; text-decoration: none; text-align: center; }
+.btn:active { background: var(--purple-dark); }
+.btn.alt { background: var(--white); color: var(--purple-dark); border: 2px solid var(--purple); }
+.btn.quiet { background: var(--purple-soft); color: var(--purple-dark); }
+.btn.green { background: var(--green); }
+.btn.sm { min-height: 46px; font-size: 15.5px; border-radius: 13px; padding: 8px 14px; }
+.btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label, .field .label-txt { font-weight: 700; font-size: 16px; }
+input[type=text], input[type=tel], input[type=password], textarea, select {
+  width: 100%; font: 18px/1.4 var(--font-body); color: var(--ink); background: var(--white);
+  border: 2px solid var(--line); border-radius: 14px; padding: 13px 14px; }
+input:focus, textarea:focus, select:focus { border-color: var(--purple); outline: none; }
+textarea { resize: vertical; min-height: 110px; }
+select { min-height: 54px; }
+input[type=range] { width: 100%; accent-color: var(--purple); height: 32px; }
+.choice { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 16px; border-radius: 16px; border: 2px solid var(--line); background: var(--white);
+  font: 700 18px var(--font-body); color: var(--ink); cursor: pointer; text-align: left; }
+.choice[aria-pressed="true"] { border-color: var(--purple); background: var(--purple-soft); }
+.toggle { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 14px 0 6px; border-radius: 999px; border: 2px solid var(--line); background: var(--white); font: 700 15px var(--font-body); color: var(--ink); cursor: pointer; }
+.toggle .track { width: 44px; height: 28px; border-radius: 14px; background: #CFC8DE; padding: 3px; display: flex; }
+.toggle .knob { width: 22px; height: 22px; border-radius: 50%; background: var(--white); }
+.toggle[aria-pressed="true"] { border-color: var(--green); background: var(--green-soft); }
+.toggle[aria-pressed="true"] .track { background: var(--green); justify-content: flex-end; }
+.pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin: 0 -2px; scrollbar-width: none; }
+.pill-btn { flex: none; min-height: 42px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--line); background: var(--white); font: 600 15px var(--font-body); color: var(--muted); cursor: pointer; }
+.pill-btn[aria-pressed="true"] { background: var(--purple); border-color: var(--purple); color: var(--white); }
+
+/* Tiles */
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 360px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tile { min-height: 108px; border-radius: 18px; border: 2px solid var(--hair); background: var(--tint); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 6px; font: 700 14.5px/1.2 var(--font-body); color: var(--ink); cursor: pointer; text-align: center; }
+.tile:active { border-color: var(--purple); background: var(--purple-soft); }
+.tile .ic { width: 48px; height: 48px; border-radius: 14px; background: var(--white); display: flex; align-items: center; justify-content: center; }
+
+/* Cards */
+.card { border: 1px solid var(--hair); border-radius: 20px; padding: 16px; background: var(--white); display: flex; flex-direction: column; gap: 12px; }
+.card.tap { cursor: pointer; text-align: left; font: inherit; color: inherit; width: 100%; }
+.avatar { flex: none; border-radius: 50%; color: var(--white); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+.who { display: flex; align-items: center; gap: 12px; border: 0; background: none; padding: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; width: 100%; }
+.name { font-weight: 700; font-size: 18px; line-height: 1.25; }
+.trade { color: var(--purple-dark); font-weight: 600; font-size: 15px; }
+.stars { color: var(--star); letter-spacing: 1px; font-size: 16px; }
+.stars i { font-style: normal; color: #DCD3F2; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 15px; color: var(--muted); }
+.facts span { display: inline-flex; align-items: center; gap: 5px; }
+.tag { display: inline-block; padding: 2px 9px; border-radius: 999px; background: var(--purple-soft); color: var(--purple-dark); font-size: 12.5px; font-weight: 700; }
+.badge { flex: none; padding: 4px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; }
+.badge.strong { background: #EDE6FF; color: var(--purple-dark); }
+.badge.possible { background: #F1EEF6; color: #554E68; }
+.badge.done { background: var(--green-soft); color: var(--green); }
+.notice { background: var(--purple-soft); border-radius: 16px; padding: 14px 16px; font-size: 16px; }
+.empty { border: 2px dashed var(--line); border-radius: 20px; padding: 26px 18px; text-align: center; display: flex; flex-direction: column; gap: 14px; align-items: center; }
+.hscroll { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding-right: 16px; scrollbar-width: none; }
+.hscroll > * { scroll-snap-align: start; }
+.spot { background: var(--purple); color: var(--white); border-radius: 24px; padding: 20px 18px; display: flex; flex-direction: column; gap: 14px; }
+.spot .tile { background: rgba(255,255,255,.12); border-color: transparent; color: var(--white); }
+.spot .tile .ic { background: var(--white); }
+.ask-btn { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 60px; padding: 0 16px; border-radius: 16px; border: 2px solid var(--purple); background: var(--white); color: var(--muted); font: 500 17px var(--font-body); cursor: pointer; text-align: left; }
+
+/* Product */
+.product { border: 1px solid var(--hair); border-radius: 20px; overflow: hidden; background: var(--white); display: flex; flex-direction: column; }
+.art { aspect-ratio: 16 / 10; max-width: 100%; display: flex; align-items: flex-end; padding: 10px 12px; font-size: 13px; color: var(--muted);
+  background-image: radial-gradient(circle at 22% 30%, rgba(91,47,203,.12) 0 17%, transparent 18%), radial-gradient(circle at 76% 68%, rgba(91,47,203,.09) 0 23%, transparent 24%); }
+.product .body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.price { font-family: var(--font-display); font-weight: 700; font-size: 20px; white-space: nowrap; }
+
+/* Chat */
+.thread { display: flex; flex-direction: column; gap: 10px; }
+.bubble { max-width: 84%; padding: 11px 15px; border-radius: 20px; font-size: 16.5px; }
+.bubble.me { align-self: flex-end; background: var(--purple); color: var(--white); border-bottom-right-radius: 6px; }
+.bubble.them { align-self: flex-start; background: var(--tint); border: 1px solid var(--hair); border-bottom-left-radius: 6px; }
+.offer { align-self: stretch; border: 2px solid var(--purple); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--white); }
+.kv { display: flex; justify-content: space-between; gap: 14px; font-size: 16px; }
+.kv span:last-child { font-weight: 700; text-align: right; }
+.composer { position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; width: min(100%, var(--col)); z-index: 20; background: var(--white); border-top: 1px solid var(--hair);
+  display: flex; gap: 10px; padding: 10px max(14px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px)); }
+.composer input { min-height: 52px; }
+.composer .btn { width: 56px; padding: 0; flex: none; }
+
+/* Progress */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; text-align: center; font-size: 14px; }
+.steps li { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--faint); position: relative; }
+.steps li span { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font-weight: 700; background: var(--white); z-index: 1; }
+.steps li:not(:last-child)::after { content: ""; position: absolute; top: 16px; left: calc(50% + 17px); right: calc(-50% + 17px); height: 2px; background: var(--line); }
+.steps li.on { color: var(--ink); font-weight: 700; }
+.steps li.on span { background: var(--purple); border-color: var(--purple); color: var(--white); }
+.steps li.on:not(:last-child)::after { background: var(--purple); }
+
+/* Faces, stepper, days */
+.faces { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.face { border: 2px solid var(--line); border-radius: 20px; background: var(--white); min-height: 128px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font: 700 16px var(--font-body); color: var(--ink); cursor: pointer; padding: 8px 4px; }
+.face[aria-pressed="true"] { border-color: var(--purple); background: var(--purple-soft); }
+.stepper { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; gap: 10px; }
+.stepper button { height: 56px; border-radius: 16px; border: 2px solid var(--purple); background: var(--white); color: var(--purple-dark); font: 700 28px var(--font-body); cursor: pointer; }
+.stepper b { text-align: center; font-family: var(--font-display); font-size: 24px; }
+.days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+.day { min-height: 64px; border: 0; border-radius: 14px; background: var(--purple-soft); color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 0; font-family: var(--font-body); }
+.day[aria-pressed="true"] { background: var(--purple); color: var(--white); }
+.day i { width: 6px; height: 6px; border-radius: 50%; }
+.earn { background: var(--purple); color: var(--white); border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
+.earn b { font-family: var(--font-display); font-size: 32px; letter-spacing: -.02em; }
+
+/* Sign in */
+.hero-in { background: var(--purple); color: var(--white); border-radius: 26px; padding: 24px 20px; display: flex; flex-direction: column; gap: 12px; }
+.person-btn { display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 14px; border-radius: 18px; border: 2px solid var(--hair); background: var(--white); text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.person-btn:active { border-color: var(--purple); }
+.num { font-variant-numeric: tabular-nums; letter-spacing: .03em; user-select: all; }
+.error { color: var(--red); background: #FBEDED; border-radius: 12px; padding: 12px 14px; font-size: 16px; font-weight: 600; }
+.bigcheck { width: 104px; height: 104px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; }
+.center { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+
+/* Bottom tabs */
+.tabs { position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; width: min(100%, var(--col)); z-index: 20; background: var(--white); border-top: 1px solid var(--hair);
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+  padding: 6px max(6px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); }
+.tabs button { position: relative; border: 0; background: none; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font: 700 12.5px var(--font-body); color: var(--faint); cursor: pointer; }
+.tabs button[aria-current="page"] { color: var(--purple); }
+.tabs .dot { position: absolute; top: 6px; left: calc(50% + 8px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--purple); color: var(--white); font-size: 11.5px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+
+.status-line { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.status-line i { width: 8px; height: 8px; border-radius: 50%; background: #D9A21B; flex: none; }
+.status-line.ready i { background: var(--green); }
+.status-line.failed i { background: #B54848; }
+.spinner { width: 44px; height: 44px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--purple); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(92px + env(safe-area-inset-bottom, 0px)); width: min(calc(100% - 28px), 452px); background: var(--ink); color: var(--white); border-radius: 16px; padding: 14px 16px; font-size: 16px; z-index: 40; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* v2 additions */
+.searchbar { display: flex; gap: 8px; }
+.searchbar input { min-height: 56px; }
+.searchbar .btn { width: 56px; flex: none; padding: 0; }
+.link, .link-plain { border: 0; background: none; padding: 6px 0; font: 700 16px var(--font-body); color: var(--purple-dark); cursor: pointer; text-align: left; }
+.link-plain { color: var(--ink); font-weight: inherit; padding: 0; }
+.art-btn { border: 0; padding: 0; background: none; cursor: pointer; display: block; width: 100%; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; padding: 4px; border-radius: 16px; background: var(--purple-soft); }
+.seg button { min-height: 46px; border: 0; border-radius: 12px; background: transparent; color: var(--muted); font: 700 15px var(--font-body); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--white); color: var(--purple-dark); box-shadow: 0 1px 3px rgba(67,32,154,.14); }
+.daygrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.daychip { min-height: 66px; border-radius: 16px; border: 2px solid var(--line); background: var(--white); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; color: var(--ink); font-family: var(--font-body); }
+.daychip b { font-size: 20px; }
+.daychip[aria-pressed="true"] { border-color: var(--purple); background: var(--purple); color: var(--white); }
+.choice .grow { min-width: 0; }
+.pill-btn.check { display: inline-flex; align-items: center; gap: 6px; }
+.badge.warn { background: #FFF2D6; color: #7A5300; }
+.badge.bad { background: #FBEDED; color: var(--red); }
+.status-box { border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: var(--purple-soft); font-size: 17px; }
+.status-box .badge { align-self: flex-start; }
+.status-box.done { background: var(--green-soft); }
+.status-box.warn { background: #FFF6E2; }
+.status-box.bad { background: #FBEDED; }
+.btn.danger { color: var(--red); border-color: #E7B8B8; }
+.btn.danger-fill { background: var(--red); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.timeline { list-style: none; margin: 0; padding: 0 0 0 14px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
+.timeline li { display: flex; flex-direction: column; position: relative; font-size: 16px; }
+.timeline li::before { content: ""; position: absolute; left: -21px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--purple); }
+.sys { align-self: center; text-align: center; font-size: 14px; color: var(--muted); background: var(--purple-soft); border-radius: 999px; padding: 6px 14px; margin: 4px 0; max-width: 90%; }
+.mtime { display: block; font-size: 11.5px; opacity: .7; margin-top: 4px; text-align: right; }
+.photo-bubble { padding: 6px; }
+.photo-bubble img { display: block; max-width: 100%; border-radius: 14px; max-height: 260px; }
+.offer.dim { border-color: var(--line); opacity: .75; }
+.topdot { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--purple); color: var(--white); font-size: 11.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.basket-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-top: 1px solid var(--hair); }
+.mini-step { display: inline-grid; grid-template-columns: 44px auto 44px; align-items: center; gap: 8px; }
+.mini-step button { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--purple); background: var(--white); color: var(--purple-dark); font: 700 22px var(--font-body); cursor: pointer; }
+.mini-step b { text-align: center; min-width: 28px; font-size: 17px; }
+.composer .photo-pick { width: 52px; height: 52px; flex: none; cursor: pointer; }
+.toggle .track { flex: none; }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+</style>
+
+<div id="app"></div>
+<script>
+/* =========================================================
+   Mock data. Everything here is invented sample content.
+   ========================================================= */
+const AREAS = {
+  "Maadi": [29.9602, 31.2569], "Zamalek": [30.0609, 31.2194], "Downtown": [30.0444, 31.2357],
+  "Dokki": [30.0384, 31.2120], "Mohandessin": [30.0566, 31.2002], "Heliopolis": [30.0911, 31.3225],
+  "Nasr City": [30.0561, 31.3301], "New Cairo": [30.0074, 31.4913], "Rehab": [30.0601, 31.4920],
+  "Mokattam": [30.0118, 31.3047], "Shubra": [30.1100, 31.2445], "Sheikh Zayed": [30.0444, 30.9790],
+  "6th of October": [29.9726, 30.9445]
+};
+
+// [name, area, mode, travel km, rating, jobs, rate, group, trade, bio]
+const FREELANCERS = [
+  // Skilled trades
+  ["Ibrahim Saad","Shubra","in-person",20,4.4,410,"from 200 EGP","trades","Plumber","Plumber. Leaking taps, blocked drains, water heaters and new bathroom installation."],
+  ["Fathy Abdelaziz","Heliopolis","in-person",18,4.8,522,"from 250 EGP","trades","Plumber","Plumber with 25 years experience. Water heater installation and repair, burst pipes, toilets and sinks, emergency calls at night."],
+  ["Adel Kamal","Nasr City","in-person",20,4.5,380,"from 200 EGP","trades","Electrician","Electrician. New sockets and lights, fixing short circuits, installing ceiling fans and chandeliers."],
+  ["Hassan El Masry","Maadi","in-person",15,4.7,296,"from 300 EGP","trades","Electrician","Electrician for apartments and shops. Full rewiring, distribution boards, fixing power that keeps tripping, intercoms and outdoor lighting."],
+  ["Mahmoud Saeed","Mokattam","in-person",25,4.7,301,"from 600 EGP","trades","Carpenter","Carpenter. I make custom wardrobes, kitchen cabinets, shelves and beds from MDF or solid wood, and fix doors that do not close."],
+  ["Tarek Hassan","6th of October","in-person",30,4.5,140,"from 500 EGP","trades","Woodworker","Woodworker making solid wood furniture to order: dining tables, desks, coffee tables, TV units. I also restore and refinish old antique furniture."],
+  ["Samy Fouad","Mokattam","in-person",25,4.3,270,"from 350 EGP","trades","AC technician","Air conditioner technician. AC installation, cleaning, gas refill and repair for all brands, including units that drip water."],
+  ["Gamal Abdo","Downtown","in-person",20,4.4,150,"from 1,500 EGP","trades","Painter","Painter. I paint walls and ceilings, do wallpaper, and fix cracks and damp patches before painting."],
+  ["Reda Sobhy","Shubra","in-person",20,4.6,188,"from 120 EGP/m²","trades","Tiler","Tiler for ceramic and porcelain in bathrooms, kitchens and floors. I remove old tiles, level the floor and grout."],
+  ["Sayed Mohamed","Nasr City","in-person",20,4.5,97,"from 250 EGP/m²","trades","Gypsum board installer","Gypsum board ceilings and walls, plastering, hidden lighting in ceilings, and fixing cracked plaster."],
+  ["Atef Hamed","Mokattam","in-person",25,4.6,164,"from 800 EGP","trades","Welder","Welder and blacksmith. Iron window guards, balcony railings, gates, metal stairs, and fixing broken metal doors."],
+  ["Shaaban Ali","Dokki","in-person",15,4.7,615,"from 250 EGP","trades","Appliance technician","Appliance repair: washing machines that won't spin or drain, fridges that stop cooling, ovens and dishwashers. Same-day visits, original spare parts."],
+  ["Ashraf Lotfy","Downtown","in-person",20,4.8,340,"from 300 EGP","trades","Locksmith","Locksmith. Opening locked doors without damage, changing locks and cylinders, installing smart locks and safes. Available late at night."],
+  ["Sobhy Abdallah","New Cairo","in-person",25,4.6,77,"from 60 EGP/m²","trades","Marble polisher","Marble and granite polishing and crystallisation for floors and stairs, and repairing chipped edges."],
+  ["Magdy Fawzy","Shubra","in-person",15,4.3,230,"from 200 EGP","trades","Satellite installer","Satellite dish installation and tuning, TV wall mounting, receivers and home internet routers."],
+  ["Hamdy Ezzat","Heliopolis","in-person",20,4.7,260,"from 250 EGP","trades","Gas technician","Gas cooker and water heater technician. Gas leak checks, converting cookers to natural gas, heater servicing."],
+  ["Nasser Ali","Rehab","in-person",25,4.5,69,"from 150 EGP/m²","trades","Flooring installer","Parquet and wooden floor installation, sanding and varnishing old parquet, and laminate flooring."],
+  ["Ehab Saber","Sheikh Zayed","in-person",35,4.6,48,"by quote","trades","Solar installer","Solar water heater and solar panel installation for villas and rooftops, plus maintenance of existing systems."],
+  ["Bassem Youssef","Mohandessin","in-person",15,4.2,81,"from 600 EGP","trades","Aluminium and glass","Aluminium and glass work: new windows, shower glass, mosquito nets and kitchen aluminium cabinets."],
+  ["Wael Gaber","Nasr City","in-person",20,4.4,112,"from 700 EGP","trades","Furniture painter","Furniture painting and lacquering: repainting kitchen cabinets, doors and old bedroom sets in any colour."],
+  ["Mohsen Taha","Shubra","in-person",25,4.3,205,"from 900 EGP","trades","Builder","Builder. Brick walls, demolishing old kitchens and bathrooms, carrying out rubble, and small renovation work."],
+  ["Mostafa Gaber","6th of October","in-person",30,4.5,180,"from 300 EGP","trades","Car mechanic","Car mechanic who comes to you. Car won't start, battery, brakes, oil change, and check-engine lights for Korean and Japanese cars."],
+  ["Osama Gamal","Downtown","in-person",15,4.3,96,"from 700 EGP","trades","Upholsterer","Upholsterer. I re-cover sofas, chairs and headboards in new fabric, replace the foam and fix broken springs."],
+  ["Saeed Mansour","Downtown","in-person",10,4.7,430,"from 80 EGP","trades","Cobbler","Cobbler and leather repair: new soles and heels, fixing bags, and replacing zips on leather jackets."],
+  // Home help
+  ["Ayman Ragab","Nasr City","in-person",30,4.4,520,"from 800 EGP","home","Mover","Furniture moving with my own van and two helpers. Apartment moves, single items, stairs with no elevator, and wrapping fragile pieces."],
+  ["Sherif Lotfy","Maadi","in-person",20,4.6,190,"from 350 EGP","home","Helper","Strong and careful. I help carry heavy things: sofas up stairs, fridges, washing machines, or rearranging a room. Small jobs welcome."],
+  ["Abdelrahman Nour","Sheikh Zayed","in-person",40,4.5,260,"from 400 EGP","home","Driver with truck","Driver with a quarter-truck. Small deliveries, picking up furniture from showrooms, moving boxes across Cairo."],
+  ["Waleed Ibrahim","New Cairo","in-person",20,4.7,233,"from 250 EGP","home","Handyman","Handyman for flat-pack assembly. I put together IKEA wardrobes, beds and desks, mount TVs on the wall, hang curtains and shelves."],
+  ["Sabah Ibrahim","Nasr City","in-person",15,4.9,380,"from 450 EGP","home","Cleaner","Deep house cleaning: kitchens, bathrooms, windows, and after-renovation cleaning. I bring my own supplies."],
+  ["Gamalat Saeed","Maadi","in-person",10,4.8,520,"from 350 EGP","home","Cleaner","Weekly home cleaning and ironing. Trusted by families in Maadi for 8 years."],
+  ["Khaled Ramadan","Nasr City","in-person",30,4.5,310,"from 500 EGP","home","Pest control","Pest control for cockroaches, bed bugs, ants and rats. Safe for children and pets, with a 3-month guarantee."],
+  ["Tamer Sayed","6th of October","in-person",35,4.4,90,"from 600 EGP","home","Water tank technician","Water tank cleaning and pump installation and repair for buildings and villas."],
+  ["Nabil Hosny","Sheikh Zayed","in-person",20,4.6,140,"from 500 EGP","home","Gardener","Gardener for villas and compounds: mowing lawns, pruning trees, planting, and fixing irrigation."],
+  ["Rana Mahfouz","Rehab","in-person",20,4.7,61,"from 700 EGP","home","Balcony gardener","Balcony and garden landscaping. I choose and plant greenery, set up drip watering and pots that suit sun or shade."],
+  ["Yehia Kamal","Heliopolis","in-person",20,4.6,150,"from 300 EGP","home","Curtain installer","I install curtains, rods, roller blinds and blackout curtains, and sew curtains to size."],
+  ["Karima Salah","Mokattam","in-person",15,4.9,85,"from 600 EGP","home","Home cook","Home cooking: daily meals for families, frozen meal prep, and food trays for gatherings."],
+  ["Seif Lotfy","Maadi","in-person",8,4.9,205,"150 EGP/walk","home","Pet sitter","Dog walker and pet sitter. Daily walks, feeding cats while you travel, and overnight pet sitting."],
+  ["Nermeen Atef","Nasr City","in-person",10,4.8,44,"120 EGP/hr","home","Babysitter","Experienced babysitter and companion for elderly parents. Evenings and weekends, first aid trained."],
+  ["Hesham Zaki","New Cairo","in-person",20,4.6,140,"from 900 EGP","home","Car detailer","Car detailing at your door: interior deep cleaning, polishing and ceramic coating."],
+  // Clothes and beauty
+  ["Hoda Mansour","Shubra","in-person",20,4.9,212,"from 150 EGP","craft","Tailor","Tailor with 18 years experience. I do alterations, taking in or letting out dresses, shortening trousers and abayas, and fixing zips. Wedding and engagement dresses are my speciality."],
+  ["Karim Adel","Heliopolis","in-person",15,4.6,88,"from 400 EGP","craft","Tailor","Men's tailoring: made-to-measure suits, shirts and galabeyas. I come to measure at your home."],
+  ["Nadia Fawzy","Mohandessin","both",12,4.8,64,"from 300 EGP","craft","Embroiderer","Hand embroidery and beading. I add embroidery to abayas, wedding veils, cushions and baby blankets, and personalise gifts with names."],
+  ["Salma Wagdy","Dokki","in-person",15,4.9,300,"from 600 EGP","craft","Henna artist","Henna artist for brides, engagement nights and henna parties. Traditional and modern designs."],
+  ["Dina Farouk","New Cairo","in-person",25,4.8,210,"from 1,800 EGP","craft","Makeup artist","Makeup artist and hairstylist. Bridal makeup, engagement looks and evening makeup at your home or the venue."],
+  // Women-run trades, crafts and home work
+  ["Aziza Fathy","Mokattam","in-person",15,4.7,96,"from 500 EGP","craft","Seamstress","Seamstress. I sew curtains, cushion covers, bed sheets and tablecloths to size, and make simple dresses and school uniforms."],
+  ["Samia Hassan","Shubra","in-person",15,4.8,140,"from 400 EGP","craft","Crochet and knitting","Crochet and knitting by hand: baby blankets, cardigans, bags and toys made to order. I also teach small crochet classes at home."],
+  ["Hanan Mostafa","Downtown","both",10,4.9,72,"250 EGP/class","craft","Sewing teacher","Sewing teacher. Beginner classes on a sewing machine, cutting patterns, and alterations you can do yourself."],
+  ["Rasha Adel","Heliopolis","in-person",20,4.8,190,"from 350 EGP","craft","Hairdresser","Hairdresser who comes to your home: cuts, blow-dry, colour and hair for weddings and family occasions."],
+  ["Nevine Samir","Nasr City","in-person",15,4.7,150,"from 200 EGP","craft","Nail technician","Nail technician at home: manicure, pedicure, gel polish and nail art for brides."],
+  ["Fatma Ali","Shubra","in-person",10,4.9,230,"from 300 EGP","home","Home cook","Home cook making mahshi, molokhia, bechamel pasta and stuffed pigeons to order. Daily home-cooked meals for families and elderly parents, delivered warm."],
+  ["Zeinab Ibrahim","Mokattam","in-person",20,4.8,170,"from 150 EGP","home","Pickles and frozen meals","Homemade pickles, jams and frozen ready-to-cook food: stuffed vine leaves, kofta and sambousek, packed for your freezer."],
+  ["Heba Nabil","Nasr City","in-person",8,4.7,260,"from 150 EGP","home","Laundry and ironing","Ironing and laundry. I collect your clothes and bed sheets and bring them back washed, ironed and folded."],
+  ["Amira Fouad","Zamalek","both",10,4.8,64,"from 450 EGP","craft","Jewellery maker","Handmade silver and beaded jewellery. Custom name necklaces, bridal sets and bracelets made to order."],
+  ["Doaa Saber","6th of October","in-person",25,4.6,58,"from 450 EGP","craft","Potter","Potter making handmade plates, mugs and planters. Custom sets for cafes and wedding favours."],
+  ["Shereen Gamal","Maadi","in-person",15,4.7,80,"from 240 EGP","craft","Candle and soap maker","Handmade soy candles and olive oil soap. Gift boxes and wedding favours with custom labels."],
+  ["Sayeda Mahmoud","Shubra","in-person",10,4.8,110,"from 900 EGP","craft","Rug weaver","Hand-woven kilim and rag rugs on a loom, in any size and colours you choose."],
+  ["Yomna Tarek","Maadi","in-person",15,4.8,62,"from 250 EGP","trades","Electrician","Electrician for homes, and a good fit for women-only households. Sockets, lights, fans, and fixing short circuits."],
+  ["Nahla Sobhy","New Cairo","in-person",20,4.7,55,"from 1,200 EGP","trades","Painter","Painter for walls and ceilings, plus decorative work: stencils and murals for kids' rooms."],
+  ["Marwa Kamal","Dokki","in-person",15,4.6,45,"from 600 EGP","trades","Upholsterer","Upholsterer re-covering chairs, headboards and dining seats, and sewing slipcovers for sofas."],
+  // Events
+  ["Laila Ahmed","Maadi","in-person",25,4.8,120,"from 3,000 EGP","events","Event planner","Event planner for birthdays, engagements and small weddings. I handle the venue, decoration, catering, music and the day itself."],
+  ["Youssef Nabil","Heliopolis","in-person",30,4.5,75,"from 1,500 EGP","events","Kids entertainer","Kids party entertainer: magic shows, face painting, games and a clown act for children aged 3 to 10."],
+  ["Mariam Khaled","Nasr City","in-person",20,4.7,160,"from 900 EGP","events","Party decorator","Balloon and table decoration for parties, baby showers and gender reveals. Balloon arches, backdrops and dessert tables."],
+  ["Hany Mourad","Zamalek","in-person",40,4.7,133,"from 3,000 EGP","events","Photographer","Photographer for weddings, engagements, product shoots and family portraits. Edited photos within a week."],
+  ["Nour Hamdy","Rehab","in-person",15,4.9,87,"from 900 EGP","events","Home baker","Home baker. Custom birthday cakes, cupcakes, cookies with names and dessert boxes. Order 3 days ahead."],
+  ["Amr Selim","Zamalek","in-person",25,4.8,49,"from 2,500 EGP","events","Private chef","Private chef. I cook dinners at your home for up to 20 guests, run cooking classes and plan restaurant menus and recipes."],
+  // Lessons
+  ["Mona Hegazy","Maadi","both",10,4.9,260,"350 EGP/hr","lessons","Maths tutor","Maths tutor for IGCSE and American diploma, grades 6 to 12. Lessons at home in Maadi or online."],
+  ["Ramy Shawky","Heliopolis","both",12,4.7,145,"400 EGP/hr","lessons","Science teacher","Chemistry and physics teacher for high school and SAT subject preparation."],
+  ["Sara Gaber","Zamalek","remote",0,4.8,180,"500 EGP/hr","lessons","English coach","IELTS and English speaking coach. I help adults pass IELTS and get confident speaking English at work."],
+  ["Hazem Ezz","New Cairo","both",15,4.6,66,"450 EGP/hr","lessons","Music teacher","Piano and guitar teacher for kids and adults, beginners welcome. I also teach music theory."],
+  ["Mai Sherif","Sheikh Zayed","in-person",15,4.7,52,"500 EGP/session","lessons","Swimming coach","Swimming coach for children and adults afraid of the water. Private sessions at your compound pool."],
+  ["Khaled Mounir","Mohandessin","both",15,4.5,120,"450 EGP/session","lessons","Personal trainer","Personal trainer. Weight loss, strength training and home workouts with no equipment."],
+  // Design and digital
+  ["Reem El Sayed","Zamalek","both",20,4.9,58,"from 5,000 EGP","digital","Interior designer","Interior designer. I plan layouts, choose colours, furniture and lighting, and give you 3D renders. Apartments, cafes and small offices."],
+  ["Omar Sabry","Sheikh Zayed","remote",0,4.6,41,"from 2,500 EGP","digital","Interior designer","Online interior design consultations. Send me photos and measurements of your room and I send a mood board, a floor plan and a shopping list."],
+  ["Farida Zaki","Mohandessin","remote",0,4.7,92,"from 1,200 EGP","digital","Graphic designer","Graphic designer. Logos, menus for restaurants and cafes, flyers, social media posts and business cards."],
+  ["Ahmed Fikry","Nasr City","remote",0,4.6,70,"400 EGP/hr","digital","Web developer","Full-stack web developer. React and Node.js. I build features, fix bugs, set up login and payments, and build websites for small businesses."],
+  ["Mostafa Ali","Dokki","remote",0,4.5,38,"450 EGP/hr","digital","App developer","Mobile app developer with Flutter. Android and iPhone apps, push notifications, maps and publishing to the app stores."],
+  ["Yasmin Adel","Heliopolis","remote",0,4.8,33,"from 4,000 EGP","digital","Course designer","Instructional designer. I turn your knowledge into an online course: lesson plans, slides, quizzes and setting it up on Teachable or Udemy."],
+  ["Ziad Tawfik","6th of October","remote",0,4.4,110,"from 600 EGP","digital","Video editor","Video editor for YouTube, reels and TikTok. Cutting, subtitles, colour and motion graphics."],
+  ["Mohamed Rashad","Dokki","both",10,4.6,330,"from 250 EGP","digital","Phone and laptop repair","Phone and laptop repair. Screen replacement, battery, slow laptops and data recovery."],
+  ["Ola Nasser","Heliopolis","remote",0,4.7,57,"from 1,500 EGP","digital","Bookkeeper","Bookkeeper and accountant for small businesses. Monthly books, invoices, VAT returns and payroll."]
+].map(([name, area, mode, travel, rating, jobs, rate, group, trade, bio], id) => ({ id, name, area, mode, travel, rating, jobs, rate, group, trade, bio, reviews: [], available: true }));
+
+const WOMEN = new Set(["Hoda Mansour","Nadia Fawzy","Salma Wagdy","Dina Farouk","Sabah Ibrahim","Gamalat Saeed","Karima Salah","Nermeen Atef","Rana Mahfouz","Nour Hamdy","Laila Ahmed","Mariam Khaled","Mona Hegazy","Sara Gaber","Mai Sherif","Reem El Sayed","Farida Zaki","Yasmin Adel","Ola Nasser",
+  "Aziza Fathy","Samia Hassan","Hanan Mostafa","Rasha Adel","Nevine Samir","Fatma Ali","Zeinab Ibrahim","Heba Nabil","Amira Fouad","Doaa Saber","Shereen Gamal","Sayeda Mahmoud","Yomna Tarek","Nahla Sobhy","Marwa Kamal"]);
+FREELANCERS.forEach(p => { p.woman = WOMEN.has(p.name); });
+
+const byName = n => FREELANCERS.find(p => p.name === n);
+
+// Sample reviews from sample clients.
+[
+  ["Fathy Abdelaziz", "Dalia, Heliopolis", 5, ["On time", "Fair price"], "Came at 11 PM for a burst pipe under the kitchen sink. Fixed in 40 minutes."],
+  ["Fathy Abdelaziz", "Sherif, Nasr City", 5, ["Good quality"], "Installed a new water heater and took the old one away."],
+  ["Hassan El Masry", "Mariam, Maadi", 5, ["Kept me updated", "Clean and tidy"], "Found why the bedroom kept tripping the breaker and rewired the socket line."],
+  ["Mahmoud Saeed", "Hana, Zamalek", 4, ["Good quality"], "Built shelves into an awkward alcove. Took one day longer than planned but looks great."],
+  ["Shaaban Ali", "Karim, Heliopolis", 5, ["On time", "Fair price"], "Washing machine wasn't draining. Replaced the pump the same afternoon."],
+  ["Atef Hamed", "Nadine, Zamalek", 5, ["Good quality"], "Made iron guards for four windows that match the old building."],
+  ["Ayman Ragab", "Ingy, Maadi", 4, ["Friendly"], "Moved a 2-bedroom flat to the 5th floor with no lift. Nothing broken."],
+  ["Sabah Ibrahim", "Rania, Dokki", 5, ["Clean and tidy", "On time"], "After-renovation clean. The flat looked new."],
+  ["Osama Gamal", "Mariam, Maadi", 5, ["Good quality", "Fair price"], "Re-covered my grandmother's armchair in plum linen. Picked up and returned on time."],
+  ["Hoda Mansour", "Yasmine, Maadi", 5, ["Good quality", "Friendly"], "Took in my wedding dress in two fittings. Perfect fit."],
+  ["Reda Sobhy", "Tamer, Nasr City", 4, ["Good quality"], "Re-tiled a small bathroom in 3 days. Lines are straight."],
+  ["Ashraf Lotfy", "Laila, Rehab", 5, ["On time"], "Got me back into my flat in 15 minutes without breaking the lock."],
+  ["Aziza Fathy", "Hala, Mokattam", 5, ["Good quality", "Fair price"], "Sewed curtains for three windows from my own fabric. Hems are perfect."],
+  ["Samia Hassan", "Reem, Shubra", 5, ["Friendly"], "The baby blanket is so soft. She sent photos while making it."],
+  ["Fatma Ali", "Adel, Heliopolis", 5, ["On time"], "Cooks lunch for my father every day. He says it tastes like our mother's food."],
+  ["Yomna Tarek", "Salwa, Maadi", 5, ["Clean and tidy", "Kept me updated"], "Fixed the sockets in the kitchen and explained everything. I felt comfortable having her in the flat."],
+  ["Amira Fouad", "Nourhan, Zamalek", 5, ["Good quality"], "Made a name necklace for my sister's birthday. Beautiful work."],
+  ["Rasha Adel", "Dina, Heliopolis", 4, ["On time"], "Did hair for four of us before a wedding. Great results."]
+].forEach(([n, who, rating, tags, text]) => byName(n).reviews.push({ who, rating, tags, text }));
+
+// Jobs posted by sample clients. Most are skilled trades and home jobs.
+const CLIENT_REQUESTS = [
+  ["Dalia","Heliopolis","up to 600 EGP","12 min ago","trades","Kitchen sink is leaking under the cabinet and the floor is getting wet"],
+  ["Sherif","Nasr City","up to 3,500 EGP","40 min ago","trades","Water heater isn't heating anymore, might need replacing"],
+  ["Mona","Maadi","up to 800 EGP","1 h ago","trades","Power in the bedroom keeps tripping the breaker"],
+  ["Hany","New Cairo","up to 1,200 EGP","2 h ago","trades","Install 3 ceiling fans in the bedrooms"],
+  ["Omar","Mokattam","up to 900 EGP","25 min ago","trades","Split AC is dripping water inside the room"],
+  ["Nada","Shubra","up to 12,000 EGP","3 h ago","trades","Paint a 3-bedroom apartment, walls and ceilings"],
+  ["Tamer","Nasr City","up to 9,000 EGP","5 h ago","trades","Re-tile a small bathroom, about 12 square metres"],
+  ["Rasha","Heliopolis","up to 15,000 EGP","1 h ago","trades","Gypsum board ceiling with hidden lighting for the living room"],
+  ["Nadine","Zamalek","up to 6,000 EGP","4 h ago","trades","Iron guards for 4 windows on the ground floor"],
+  ["Ahmed","Dokki","up to 700 EGP","15 min ago","trades","Washing machine won't spin or drain"],
+  ["Lobna","Mohandessin","up to 800 EGP","35 min ago","trades","Fridge stopped cooling since yesterday"],
+  ["Laila","Downtown","up to 500 EGP","5 min ago","trades","I'm locked out of my apartment, key broke in the lock"],
+  ["Hossam","New Cairo","up to 5,000 EGP","6 h ago","trades","Polish the marble floor in the entrance and stairs"],
+  ["Samar","Shubra","up to 400 EGP","2 h ago","trades","Install and tune a satellite dish on the roof"],
+  ["Waleed","Heliopolis","up to 600 EGP","3 h ago","trades","Convert our gas cooker to natural gas"],
+  ["Ingy","Rehab","up to 8,000 EGP","1 d ago","trades","Sand and varnish old parquet floors in two rooms"],
+  ["Amr","6th of October","up to 600 EGP","50 min ago","trades","Car won't start in the morning, battery or starter"],
+  ["Mai","Shubra","up to 10,000 EGP","7 h ago","trades","Demolish the old kitchen tiles and counter before renovation"],
+  ["Ingy","Maadi","up to 1,000 EGP","4 h ago","home","Two people to carry a sofa up to the 4th floor, no elevator"],
+  ["Hesham","Nasr City","up to 4,500 EGP","1 d ago","home","Move a 2-bedroom apartment from Nasr City to New Cairo"],
+  ["Rania","Dokki","up to 1,200 EGP","2 h ago","home","Deep clean the flat after renovation, 140 square metres"],
+  ["Heba","Nasr City","up to 900 EGP","5 h ago","home","Cockroaches in the kitchen, need pest control"],
+  ["Sameh","6th of October","up to 1,500 EGP","8 h ago","home","Clean the building's water tank and fix the pump"],
+  ["Noha","Heliopolis","up to 700 EGP","3 h ago","home","Install curtain rods and blackout curtains in 3 rooms"],
+  ["Khaled","Sheikh Zayed","up to 2,000 EGP","1 d ago","home","Garden maintenance for a villa, monthly"],
+  ["Hala","Mokattam","up to 1,500 EGP","30 min ago","craft","Sew curtains for the living room, 3 windows, I have the fabric"],
+  ["Reem","Shubra","up to 700 EGP","2 h ago","craft","Crochet a baby blanket in white and mint for a newborn"],
+  ["Adel","Heliopolis","up to 3,000 EGP","3 h ago","home","Daily home-cooked lunch for my elderly father, delivered"],
+  ["Nourhan","Zamalek","up to 2,500 EGP","5 h ago","craft","50 embroidered favour pouches with our initials for an engagement"],
+  ["Salwa","Maadi","up to 1,500 EGP","1 h ago","craft","Hairdresser at home for 4 women before a family wedding"],
+  ["Maha","Nasr City","up to 300 EGP","45 min ago","home","Wash and iron a week of shirts and bed sheets"],
+  ["Yasmine","Maadi","up to 800 EGP","20 min ago","craft","My wedding dress is loose at the waist and needs taking in before Friday"],
+  ["Amal","Shubra","no budget given","1 h ago","craft","Shorten 3 abayas, about 6 cm each"],
+  ["Karim","Downtown","up to 300 EGP","3 h ago","craft","Replace the broken zip on a leather jacket"],
+  ["Sherine","Heliopolis","up to 4,000 EGP","2 h ago","events","Plan my daughter's 7th birthday party at home for 20 kids"],
+  ["Tamer","Nasr City","400 EGP/hr","50 min ago","digital","Build a sign-up and login page for my React app"],
+  ["Rania","Dokki","300 EGP/hr","1 h ago","lessons","Algebra lessons for my son, grade 9, twice a week"],
+  ["Mahmoud","Mohandessin","up to 1,500 EGP","5 h ago","digital","Design a new menu for my coffee shop"]
+].map(([client, area, budget, ago, group, ask], i) => ({ id: "s" + i, client, area, budget, ago, group, ask, owner: null }));
+
+// Skilled trades shown on the home page. Each one runs a real search with a typical request.
+const TRADES = [
+  ["Plumbing", ["Plumber"], "My kitchen tap is leaking and the sink drain is blocked"],
+  ["Electrical", ["Electrician"], "The power in one room keeps tripping"],
+  ["Carpentry", ["Carpenter", "Woodworker"], "I need a wardrobe built to fit my bedroom wall"],
+  ["AC repair", ["AC technician"], "My AC is dripping water and not cooling"],
+  ["Painting", ["Painter", "Furniture painter"], "Paint my living room and fix a damp patch"],
+  ["Tiling", ["Tiler", "Marble polisher", "Flooring installer"], "Re-tile my bathroom floor and walls"],
+  ["Welding", ["Welder"], "Iron guards for my windows"],
+  ["Appliances", ["Appliance technician", "Gas technician"], "My washing machine won't drain"],
+  ["Moving", ["Mover", "Helper", "Driver with truck"], "Move my furniture to a new apartment"],
+  ["Cleaning", ["Cleaner", "Pest control", "Water tank technician"], "Deep clean my apartment after painting"],
+  ["Locksmith", ["Locksmith"], "I'm locked out and need the door opened"],
+  ["Car repair", ["Car mechanic", "Car detailer"], "My car won't start in the morning"]
+];
+
+// Handmade products from local makers. [name, maker, price EGP, category, days to make, description, colour]
+const PRODUCTS = [
+  ["Crochet baby blanket", "Samia Hassan", 650, "Home", 7, "Soft cotton yarn, 80 × 100 cm, in any two colours.", "#E9DDFB"],
+  ["Crochet tote bag", "Samia Hassan", 480, "Clothing", 5, "Sturdy cotton market bag with leather handles.", "#DCD0F7"],
+  ["Silver name necklace", "Amira Fouad", 850, "Jewellery", 5, "Sterling silver, any name up to 8 letters in English or Arabic.", "#EEE8FA"],
+  ["Beaded bridal bracelet set", "Amira Fouad", 1200, "Jewellery", 7, "Three bracelets in pearl and crystal beads, matched to your dress.", "#F3EDFD"],
+  ["Hand-thrown mug set of 4", "Doaa Saber", 900, "Home", 10, "Stoneware mugs glazed in plum and cream. Dishwasher safe.", "#D9CCF5"],
+  ["Terracotta herb planters (3)", "Doaa Saber", 450, "Home", 7, "Small planters with saucers for a kitchen window.", "#E4D8F9"],
+  ["Soy candle gift box", "Shereen Gamal", 380, "Gifts", 3, "Three candles in jasmine, oud and orange blossom.", "#EDE4FC"],
+  ["Olive oil soap, 6 bars", "Shereen Gamal", 240, "Gifts", 3, "Cold-process soap with Siwa olive oil, unscented or lavender.", "#E6DCFA"],
+  ["Hand-woven kilim rug", "Sayeda Mahmoud", 2800, "Home", 14, "120 × 180 cm on a wooden loom, in the colours you pick.", "#D2C2F2"],
+  ["Embroidered cushion covers (2)", "Nadia Fawzy", 700, "Home", 6, "Linen covers with hand-stitched names or a pattern you choose.", "#EAE0FB"],
+  ["Kids' school uniform set", "Aziza Fathy", 750, "Clothing", 7, "Shirt, trousers or skirt sewn to your child's measurements.", "#DED2F8"],
+  ["Homemade pickles, 4 jars", "Zeinab Ibrahim", 220, "Food", 2, "Lemon, carrot, cucumber and mixed turnip pickles.", "#E8DEFA"],
+  ["Frozen vine leaves and kofta box", "Zeinab Ibrahim", 550, "Food", 2, "50 stuffed vine leaves and 1 kg kofta, ready to cook.", "#DACDF6"],
+  ["Mahshi tray for 6", "Fatma Ali", 600, "Food", 1, "Stuffed peppers, courgettes and aubergines, delivered warm.", "#E1D5F8"],
+  ["Custom name cookies (24)", "Nour Hamdy", 600, "Food", 3, "Iced sugar cookies with names or a party theme.", "#F0E9FD"]
+].map(([name, maker, price, cat, days, desc, colour], id) => ({ id, name, maker, price, cat, days, desc, colour }));
+
+// Women's trades and crafts shown as quick searches on the home page.
+const WOMEN_CRAFTS = [
+  ["Sewing and alterations", ["Seamstress", "Tailor", "Sewing teacher"], "Sew curtains for my living room, I have the fabric"],
+  ["Crochet and embroidery", ["Crochet and knitting", "Embroiderer"], "Crochet a baby blanket as a gift"],
+  ["Home cooking", ["Home cook", "Pickles and frozen meals", "Home baker"], "Daily home-cooked meals for my family"],
+  ["Hair, nails and henna", ["Hairdresser", "Nail technician", "Henna artist", "Makeup artist"], "Hair and nails at home before a wedding"],
+  ["Cleaning and ironing", ["Cleaner", "Laundry and ironing"], "Weekly cleaning and ironing for my flat"],
+  ["Women in the trades", ["Electrician", "Painter", "Upholsterer"], "A woman electrician to fix sockets in my kitchen"]
+];
+
+/* Demo accounts. Every account uses the same password. */
+const DEMO_PASSWORD = "wasila123";
+const ACCOUNTS = [
+  { email: "mariam@wasila.demo", role: "client", name: "Mariam Saleh", area: "Maadi", note: "Has a finished job and an open request" },
+  { email: "karim@wasila.demo", role: "client", name: "Karim Fouad", area: "Heliopolis", note: "Waiting on a plumber's quote" },
+  { email: "nadine@wasila.demo", role: "client", name: "Nadine Samy", area: "Zamalek", note: "New account, nothing posted yet" },
+  { email: "ibrahim@wasila.demo", role: "pro", name: "Ibrahim Saad", note: "Plumber · Shubra" },
+  { email: "hassan@wasila.demo", role: "pro", name: "Hassan El Masry", note: "Electrician · Maadi" },
+  { email: "mahmoud@wasila.demo", role: "pro", name: "Mahmoud Saeed", note: "Carpenter · Mokattam" },
+  { email: "atef@wasila.demo", role: "pro", name: "Atef Hamed", note: "Welder · Mokattam" },
+  { email: "shaaban@wasila.demo", role: "pro", name: "Shaaban Ali", note: "Appliance technician · Dokki" },
+  { email: "ayman@wasila.demo", role: "pro", name: "Ayman Ragab", note: "Mover · Nasr City" },
+  { email: "sabah@wasila.demo", role: "pro", name: "Sabah Ibrahim", note: "Cleaner · Nasr City" },
+  { email: "hoda@wasila.demo", role: "pro", name: "Hoda Mansour", note: "Tailor · Shubra" },
+  { email: "samia@wasila.demo", role: "pro", name: "Samia Hassan", note: "Crochet maker · Shubra" },
+  { email: "fatma@wasila.demo", role: "pro", name: "Fatma Ali", note: "Home cook · Shubra" },
+  { email: "yomna@wasila.demo", role: "pro", name: "Yomna Tarek", note: "Electrician · Maadi" }
+].map(a => ({ ...a, password: DEMO_PASSWORD }));
+
+const SUGGESTIONS = ["Fix a leaking sink", "Install ceiling fans", "Carry a sofa up the stairs", "Re-tile a bathroom", "Washing machine won't drain", "Take in a dress at the waist", "Maths tutor for grade 9", "Design a cafe menu"];
+const TINTS = ["#5B2FCB", "#7C4DDB", "#8B5CF6", "#6D45D6", "#9A6BE8", "#4C2AA8"];
+
+/* =========================================================
+   Pure helpers: distance, similarity, ranking
+   ========================================================= */
+function haversineKm(a, b) {
+  const R = 6371, r = d => d * Math.PI / 180;
+  const dLat = r(b[0] - a[0]), dLon = r(b[1] - a[1]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function dot(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
+
+// Keyword fallback, used only if the AI model cannot load.
+const STOP = new Set("a an the and or for to of in on at my me i we our is are be it this that with your you can need needs someone some who want would like please up do get have has from into about before after since not isn't won't home family flat house apartment room help daily".split(" "));
+// Small concept list so the keyword fallback still links "sink" to plumbers and "breaker" to electricians.
+const CONCEPTS = [
+  ["#plumb", /plumb|leak|sink|tap|pipe|drain|toilet|water heater|heater|bathroom install|burst/],
+  ["#electric", /electric|power|socket|light|trip|breaker|wiring|rewir|fan|short circuit|intercom/],
+  ["#ac", /\bac\b|air condition|split unit|cooling unit|dripping/],
+  ["#sew", /sew|seam|alter|dress|hem|stitch|abaya|uniform|curtain|tailor|cushion cover|slipcover/],
+  ["#crochet", /crochet|knit|yarn|blanket/],
+  ["#embroider", /embroider|beading|favour pouch|initials/],
+  ["#cook", /cook|meal|lunch|dinner|food|mahshi|molokhia|kofta|pickle|tray/],
+  ["#bake", /cake|cookie|cupcake|bake|dessert/],
+  ["#clean", /clean|iron|laundry|wash and iron|tidy|deep clean/],
+  ["#pest", /cockroach|pest|bed bug|ant|rat/],
+  ["#move", /\bmove\b|moving|carry|sofa up|elevator|van|truck|apartment from/],
+  ["#paint", /paint|wallpaper|damp|mural|lacquer/],
+  ["#tile", /tile|ceramic|porcelain|marble|granite|parquet|floor/],
+  ["#weld", /weld|iron guard|window guard|railing|gate|metal door|blacksmith/],
+  ["#wood", /wardrobe|shelf|shelves|cabinet|carpent|wood|bookshelf|table|desk/],
+  ["#lock", /lock|key|locked out/],
+  ["#appliance", /washing machine|fridge|oven|dishwasher|won't spin|won't drain|not cooling/],
+  ["#gas", /gas|cooker/],
+  ["#car", /\bcar\b|battery|engine|brake|mechanic/],
+  ["#hair", /hair|nail|manicure|henna|makeup|bridal/],
+  ["#upholster", /upholst|armchair|re-cover|recover|foam|spring|headboard/],
+  ["#garden", /garden|lawn|plant|balcony|irrigation/],
+  ["#tutor", /tutor|lesson|teach|algebra|math|ielts|class/],
+  ["#jewel", /jewel|necklace|bracelet|silver/],
+  ["#pottery", /pottery|potter|mug|planter|ceramic set/],
+  ["#tv", /\btv\b|television|satellite|dish|mount/]
+];
+function words(t) {
+  const low = String(t).toLowerCase();
+  const base = low.replace(/[^a-z0-9 ]/g, " ").split(/\s+/)
+    .filter(w => w.length > 2 && !STOP.has(w)).map(w => w.replace(/(ing|ers|er|es|s|ed)$/, ""));
+  const tags = CONCEPTS.filter(([, re]) => re.test(low)).flatMap(([tag]) => [tag, tag + "2"]);
+  return [...new Set([...base, ...tags])];
+}
+function keywordSim(a, b) {
+  const A = words(a), B = new Set(words(b));
+  if (!A.length || !B.size) return 0;
+  const hit = A.filter(w => B.has(w)).length;
+  return Math.min(1, 0.9 * hit / Math.sqrt(A.length * B.size) + (hit ? 0.2 : 0));
+}
+
+const STRONG = 0.45, POSSIBLE = 0.30;
+const strengthOf = s => s >= STRONG ? "strong" : s >= POSSIBLE ? "possible" : "weak";
+
+/* Hard filters first (how the work happens, travel range), then score:
+   0.75 text match + 0.15 rating + 0.10 closeness */
+function rankPeople(simOf, people, area, mode) {
+  const here = AREAS[area];
+  let best = -1, tooFar = 0;
+  const kept = [];
+  for (const p of people) {
+    const sim = simOf(p);
+    if (sim > best) best = sim;
+    const remoteOk = p.mode !== "in-person", inPersonOk = p.mode !== "remote";
+    if (mode === "remote" && !remoteOk) continue;
+    if (mode === "in-person" && !inPersonOk) continue;
+    let km = null, close = 1;
+    const travels = inPersonOk && !(mode !== "in-person" && remoteOk);
+    if (travels) {
+      km = haversineKm(here, AREAS[p.area]);
+      if (km > p.travel) { if (sim >= POSSIBLE) tooFar++; continue; }
+      close = 1 - Math.min(km, 30) / 30;
+    }
+    const rate = Math.max(0, Math.min(1, ((p.rating || 4) - 3) / 2));
+    kept.push({ p, sim, km, close, score: 0.75 * Math.max(0, sim) + 0.15 * rate + 0.10 * close, strength: strengthOf(sim) });
+  }
+  kept.sort((a, b) => b.score - a.score);
+  return { list: kept.filter((x, i) => x.strength !== "weak" || i < 3).slice(0, 9), best, tooFar };
+}
+
+function priceFor(p) {
+  if (/m²/.test(p.rate)) return Math.round(parseInt(p.rate.replace(/[^0-9]/g, ""), 10) * 12 / 50) * 50;
+  const n = parseInt(String(p.rate).replace(/[^0-9]/g, ""), 10) || 500;
+  const unit = /\/(hr|session|class|walk)/.test(p.rate);
+  return Math.round((unit ? n * 2 : n * 1.4) / 50) * 50;
+}
+const money = n => n.toLocaleString("en-US") + " EGP";
+const initials = name => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+const tint = p => TINTS[(p.id ?? String(p.name).length) % TINTS.length];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const dayLabel = offset => { const d = new Date(); d.setDate(d.getDate() + offset); return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }); };
+const modeText = m => m === "in-person" ? "In person" : m === "remote" ? "Remote" : "In person or remote";
+
+if (typeof module !== "undefined") module.exports = { PRODUCTS, WOMEN_CRAFTS, rankPeople, keywordSim, haversineKm, priceFor, FREELANCERS, CLIENT_REQUESTS, AREAS, ACCOUNTS, TRADES };
+</script>
+<script>
+/* =========================================================
+   Wasila mobile web app: shared data model
+   Requests, conversations and bookings are shared between
+   client and worker accounts for as long as the page is open.
+   ========================================================= */
+const people = FREELANCERS;
+const ALL_REQUESTS = CLIENT_REQUESTS;
+const PIN = "1234";
+const profileText = p => `${p.trade}. ${p.bio}`;
+const first = n => String(n).split(" ")[0];
+const digits = s => String(s).replace(/\D/g, "");
+const phoneOf = p => p.phone || `010 ${String(1000 + ((p.id + 3) * 373) % 9000)} ${String(1000 + ((p.id + 7) * 571) % 9000)}`;
+const clientPhone = name => { const h = [...name].reduce((a, c) => a * 31 + c.charCodeAt(0), 7); return `011 ${String(1000 + Math.abs(h) % 9000)} ${String(1000 + Math.abs(h >> 3) % 9000)}`; };
+const CLIENT_PHONES = { "mariam@wasila.demo": "010 0111 2233", "karim@wasila.demo": "011 0222 3344", "nadine@wasila.demo": "012 0333 4455" };
+ACCOUNTS.forEach(a => {
+  a.pin = PIN;
+  if (a.role === "client") a.phone = CLIENT_PHONES[a.email];
+  else { const p = byName(a.name); a.phone = phoneOf(p); p.account = a.email; }
+});
+PRODUCTS.forEach(x => { x.available = true; });
+
+/* ---------- dates, slots, payment ---------- */
+const DAY0 = new Date();
+const dayDate = off => { const d = new Date(DAY0); d.setDate(d.getDate() + off); return d; };
+const dayName = off => off === 0 ? "Today" : off === 1 ? "Tomorrow" : off === -1 ? "Yesterday" : off < 0 ? `${-off} days ago` : dayDate(off).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" });
+const dayShort = off => dayDate(off).toLocaleDateString("en-GB", { weekday: "short" });
+const SLOTS = { morning: "Morning, 9 to 12", afternoon: "Afternoon, 12 to 4", evening: "Evening, 4 to 8" };
+const PAY = { cash: "Cash", card: "Card", wallet: "Mobile wallet" };
+const PAYLONG = { cash: "Pay the worker in cash after the job", card: "Pay by card after you confirm the job is done", wallet: "Pay by InstaPay or a mobile wallet after the job" };
+const clock = t => new Date(t).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+/* ---------- clients ---------- */
+const CLIENTS = {};
+const client = email => (CLIENTS[email] ||= { addresses: [], card: null, basket: [] });
+const addrText = a => a ? `${a.line}, ${a.area}${a.details ? ` · ${a.details}` : ""}` : "";
+const fakeAddr = (name, area) => ({ label: "", area, line: `Building ${(name.length * 7) % 40 + 3}, Street ${(name.charCodeAt(0) % 30) + 1}`, details: `${(name.length % 5) + 1} floor`, landmark: "" });
+
+/* ---------- requests ---------- */
+let reqSeq = 0;
+function makeRequest(f) {
+  return { id: "r" + (++reqSeq), owner: f.owner || null, client: f.client, area: f.area, budget: f.budget || "price open",
+    ago: f.ago || "just now", group: "user", ask: f.text, text: f.text, label: f.label || "", icon: f.icon || "pencil",
+    status: f.status || "open", draft: !!f.draft, at: Date.now() };
+}
+function postRequest(req) { if (req.draft) { req.draft = false; req.at = Date.now(); req.ago = "just now"; ALL_REQUESTS.unshift(req); } return req; }
+const isOpen = r => !r.status || r.status === "open";
+
+/* ---------- conversations ---------- */
+const CONVOS = [];
+function convo(clientEmail, clientName, workerId) {
+  const key = clientEmail || "sample:" + clientName;
+  let c = CONVOS.find(x => x.key === key && x.workerId === workerId);
+  if (!c) { c = { id: CONVOS.length + 1, key, clientEmail, clientName, workerId, msgs: [], readC: 0, readW: 0 }; CONVOS.push(c); }
+  return c;
+}
+function addMsg(c, m) { m.at = m.at || Date.now(); m.id = c.msgs.length + 1; c.msgs.push(m); return m; }
+const lastMsg = c => c.msgs[c.msgs.length - 1];
+function openOffer(c) { return [...c.msgs].reverse().find(m => m.type === "offer" && m.status === "open"); }
+function sendOffer(c, price, title, reqId, note) {
+  c.msgs.filter(m => m.type === "offer" && m.status === "open").forEach(m => { m.status = "replaced"; });
+  return addMsg(c, { from: "w", type: "offer", price, title, reqId, note: note || "", status: "open" });
+}
+
+/* ---------- bookings ---------- */
+const BOOKINGS = [];
+function newBooking(o) {
+  const b = { id: BOOKINGS.length + 1, events: [], kind: "job", notes: "", ...o };
+  b.events.push({ at: Date.now(), text: o.firstEvent || (b.status === "confirmed" ? "Booked at the agreed price" : b.kind === "order" ? "Order placed" : "Booking requested") });
+  delete b.firstEvent;
+  BOOKINGS.push(b);
+  return b;
+}
+const logEvent = (b, text) => b.events.push({ at: Date.now(), text });
+const convoFor = b => convo(b.clientEmail, b.clientName, b.workerId);
+const STATUS = {
+  job: { requested: "Waiting for reply", confirmed: "Confirmed", onway: "On the way", done: "Work finished", paid: "Paid", declined: "Declined", cancelled: "Cancelled" },
+  order: { requested: "Waiting for maker", confirmed: "Being made", onway: "Out for delivery", done: "Delivered", paid: "Paid", declined: "Declined", cancelled: "Cancelled" }
+};
+const statusText = b => STATUS[b.kind][b.status];
+const ACTIVE = ["requested", "confirmed", "onway", "done"];
+
+/* ---------- seed data ---------- */
+function seed() {
+  // Client addresses and cards
+  Object.assign(client("mariam@wasila.demo"), { card: "Visa ending 4821", addresses: [{ label: "Home", area: "Maadi", line: "Building 14, Road 9", details: "3rd floor, flat 6", landmark: "Near Victoria Square" }] });
+  Object.assign(client("karim@wasila.demo"), { addresses: [{ label: "Home", area: "Heliopolis", line: "Villa 7, El Merghany Street", details: "Ground floor", landmark: "Opposite the bakery" }] });
+  client("nadine@wasila.demo");
+
+  // Mariam: a finished job, and an open request with a price waiting
+  const osama = byName("Osama Gamal"), waleed = byName("Waleed Ibrahim");
+  const m = client("mariam@wasila.demo");
+  const r1 = makeRequest({ owner: "mariam@wasila.demo", client: "Mariam", area: "Maadi", text: "Re-cover my grandmother's armchair, the fabric is torn", label: "Re-cover an armchair", icon: "chair", status: "booked", ago: "2 weeks ago" });
+  ALL_REQUESTS.push(r1);
+  const c1 = convo("mariam@wasila.demo", "Mariam", osama.id);
+  addMsg(c1, { from: "c", type: "request", text: r1.text, reqId: r1.id, at: Date.now() - 14 * 864e5 });
+  addMsg(c1, { from: "w", type: "offer", price: 1000, title: r1.label, reqId: r1.id, status: "accepted", at: Date.now() - 14 * 864e5 });
+  addMsg(c1, { from: "w", type: "text", text: "The chair is back with you. Enjoy it!", at: Date.now() - 10 * 864e5 });
+  c1.readC = c1.msgs.length;
+  const b1 = newBooking({ clientEmail: "mariam@wasila.demo", clientName: "Mariam", workerId: osama.id, title: r1.label, icon: "chair", reqId: r1.id, day: -14, slot: "morning", address: m.addresses[0], pay: "card", price: 1000, status: "paid", rating: 5 });
+  b1.events = [{ at: Date.now() - 14 * 864e5, text: "Booked at the agreed price" }, { at: Date.now() - 10 * 864e5, text: "Work finished" }, { at: Date.now() - 10 * 864e5, text: "Paid 1,000 EGP by card" }];
+  const r2 = makeRequest({ owner: "mariam@wasila.demo", client: "Mariam", area: "Maadi", text: "Wall-mount a 55-inch TV in the living room and hide the cables", label: "Mount a TV on the wall", icon: "tool", ago: "3 h ago" });
+  ALL_REQUESTS.unshift(r2);
+  const c2 = convo("mariam@wasila.demo", "Mariam", waleed.id);
+  addMsg(c2, { from: "c", type: "request", text: r2.text, reqId: r2.id });
+  addMsg(c2, { from: "w", type: "text", text: "Hi Mariam, I can mount it and hide the cables in the wall channel. Here's my price:" });
+  sendOffer(c2, 350, r2.label, r2.id, "Includes the wall bracket fitting. Bracket not included.");
+
+  // Karim: a price waiting from a plumber, and a finished job to pay
+  const fathy = byName("Fathy Abdelaziz"), shaaban = byName("Shaaban Ali");
+  const k = client("karim@wasila.demo");
+  const r3 = makeRequest({ owner: "karim@wasila.demo", client: "Karim", area: "Heliopolis", text: "Bathroom water heater isn't heating, it's about 8 years old", label: "Water heater not heating", icon: "drop", ago: "1 h ago" });
+  ALL_REQUESTS.unshift(r3);
+  const c3 = convo("karim@wasila.demo", "Karim", fathy.id);
+  addMsg(c3, { from: "c", type: "request", text: r3.text, reqId: r3.id });
+  addMsg(c3, { from: "w", type: "text", text: "Hi Karim, it may only need a new thermostat. I'll check first and only replace it if needed." });
+  sendOffer(c3, 450, r3.label, r3.id, "Visit and repair. A new heater would be extra.");
+  const r4 = makeRequest({ owner: "karim@wasila.demo", client: "Karim", area: "Heliopolis", text: "Washing machine won't drain, water stays in the drum", label: "Washing machine won't drain", icon: "washer", status: "booked", ago: "2 days ago" });
+  ALL_REQUESTS.push(r4);
+  const c4 = convo("karim@wasila.demo", "Karim", shaaban.id);
+  addMsg(c4, { from: "c", type: "request", text: r4.text, reqId: r4.id, at: Date.now() - 2 * 864e5 });
+  addMsg(c4, { from: "w", type: "offer", price: 350, title: r4.label, reqId: r4.id, status: "accepted", at: Date.now() - 2 * 864e5 });
+  addMsg(c4, { from: "w", type: "text", text: "Pump replaced. Run one empty cycle and tell me if it drains." });
+  const b4 = newBooking({ clientEmail: "karim@wasila.demo", clientName: "Karim", workerId: shaaban.id, title: r4.label, icon: "washer", reqId: r4.id, day: 0, slot: "morning", address: k.addresses[0], pay: "cash", price: 350, status: "done" });
+  logEvent(b4, "Shaaban is on the way"); logEvent(b4, "Work finished");
+
+  // Every worker account gets real work: a new request, an upcoming job and a paid one
+  ACCOUNTS.filter(a => a.role === "pro").forEach(a => {
+    const p = byName(a.name);
+    const picks = ALL_REQUESTS.filter(r => !r.owner && isOpen(r))
+      .map(r => ({ r, s: keywordSim(profileText(p), r.ask) })).sort((x, y) => y.s - x.s).slice(0, 3).map(x => x.r);
+    picks.forEach((r, i) => {
+      r.status = "booked";
+      const c = convo(null, r.client, p.id);
+      addMsg(c, { from: "c", type: "request", text: r.ask, reqId: r.id, at: Date.now() - (i + 1) * 3600e3 });
+      const price = priceFor(p);
+      const plan = [
+        { status: "requested", day: 1, slot: "morning", msg: `Hi ${first(p.name)}, can you come tomorrow morning?` },
+        { status: "confirmed", day: 2, slot: "afternoon", msg: "Thank you, see you then." },
+        { status: "paid", day: -3, slot: "evening", msg: "Thank you, great work!" }
+      ][i];
+      addMsg(c, { from: "c", type: "text", text: plan.msg, at: Date.now() - (i + 1) * 3000e3 });
+      c.readW = i === 0 ? 1 : c.msgs.length;
+      const b = newBooking({ clientEmail: null, clientName: r.client, workerId: p.id, title: r.ask.length > 46 ? r.ask.slice(0, 44) + "…" : r.ask, icon: "tool", reqId: r.id,
+        day: plan.day, slot: plan.slot, address: fakeAddr(r.client, r.area), pay: ["cash", "wallet", "cash"][i], price, status: plan.status, rating: plan.status === "paid" ? 5 : undefined });
+      if (plan.status === "paid") { b.events = [{ at: Date.now() - 4 * 864e5, text: "Booked" }, { at: Date.now() - 3 * 864e5, text: "Work finished" }, { at: Date.now() - 3 * 864e5, text: `Paid ${money(price)} in cash` }]; }
+    });
+  });
+  // Makers get an order to accept
+  [["Samia Hassan", 0, "Reem"], ["Fatma Ali", 13, "Adel"]].forEach(([n, pid, who]) => {
+    const p = byName(n), x = PRODUCTS[pid];
+    newBooking({ kind: "order", clientEmail: null, clientName: who, workerId: p.id, title: `${x.name} ×1`, icon: "bag", items: [{ productId: x.id, qty: 1, note: n === "Samia Hassan" ? "White and mint, please" : "" }],
+      day: x.days, slot: null, address: fakeAddr(who, p.area), pay: "cash", price: x.price + 60, status: "requested" });
+  });
+}
+seed();
+
+/* =========================================================
+   AI matching (all-MiniLM-L6-v2 in the browser), keyword fallback
+   ========================================================= */
+const AI = { state: "loading", extractor: null, cache: new Map() };
+AI.ready = new Promise(r => { AI._resolve = r; });
+async function embedTexts(texts) {
+  const todo = [...new Set(texts.filter(t => !AI.cache.has(t)))];
+  for (let i = 0; i < todo.length; i += 8) {
+    const chunk = todo.slice(i, i + 8);
+    const out = (await AI.extractor(chunk, { pooling: "mean", normalize: true })).tolist();
+    chunk.forEach((t, j) => AI.cache.set(t, out[j]));
+  }
+}
+async function similarityFn(query, targets) {
+  await Promise.race([AI.ready, new Promise(r => setTimeout(r, 15000))]);
+  if (AI.state === "ready") {
+    try {
+      await embedTexts([query, ...(targets || [])]);
+      const q = AI.cache.get(query);
+      return text => { const v = AI.cache.get(text); return v ? dot(q, v) : keywordSim(query, text); };
+    } catch (e) { AI.state = "failed"; }
+  }
+  return text => keywordSim(query, text);
+}
+window.__aiLoaded = async function (pipeline) {
+  try { AI.extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2"); await embedTexts(people.map(profileText)); AI.state = "ready"; }
+  catch (e) { AI.state = "failed"; }
+  AI._resolve();
+};
+window.__aiFailed = function () { if (AI.state === "loading") { AI.state = "failed"; AI._resolve(); } };
+
+// Rank every candidate. Workers who don't travel this far are counted, not shown.
+function rankAll(sim, pool, area) {
+  const here = AREAS[area], out = [];
+  let tooFar = 0;
+  for (const p of pool) {
+    const s = sim(profileText(p));
+    let km = null, close = 1;
+    if (p.mode !== "remote") {
+      km = haversineKm(here, AREAS[p.area]);
+      if (km > p.travel) { if (p.mode === "in-person") { if (s >= POSSIBLE) tooFar++; continue; } close = 0.4; km = null; }
+      else close = 1 - Math.min(km, 30) / 30;
+    }
+    const rs = Math.max(0, Math.min(1, ((p.rating || 4) - 3) / 2));
+    out.push({ p, s, km, score: 0.75 * Math.max(0, s) + 0.15 * rs + 0.10 * close, strength: strengthOf(s) });
+  }
+  out.sort((a, b) => b.score - a.score);
+  return { all: out, tooFar };
+}
+
+/* =========================================================
+   Wasila mobile web app: helpers and state
+   ========================================================= */
+const TASKS = [
+  ["Water and pipes", "drop", "My tap is leaking and the drain is blocked, I need a plumber"],
+  ["Electricity", "bolt", "The power keeps going off and a socket is broken, I need an electrician"],
+  ["Air conditioner", "snow", "My AC is not cooling and is dripping water"],
+  ["Fridge or washer", "washer", "My washing machine won't drain and the fridge is not cooling"],
+  ["Carpentry", "chair", "Fix a wardrobe door and build shelves, I need a carpenter"],
+  ["Moving", "box", "Move and carry heavy furniture up the stairs"],
+  ["Cleaning", "sparkle", "Deep clean my flat"],
+  ["Painting", "roller", "Paint the walls of a room and fix a damp patch"],
+  ["Tiles and floors", "grid", "Re-tile my bathroom floor and walls"],
+  ["Welding", "flame", "Iron window guards and fix a metal gate"],
+  ["Locked out", "key", "I am locked out, the key broke in the lock"],
+  ["Car repair", "car", "My car won't start in the morning"]
+];
+const WOMEN_TASKS = [
+  ["Sewing", "needle", "Sew curtains and alter clothes, I have the fabric"],
+  ["Crochet and embroidery", "yarn", "Crochet a baby blanket and embroider names on cushions"],
+  ["Home cooking", "pot", "Home-cooked meals for my family"],
+  ["Hair and nails", "scissors", "Hair and nails at my place before a wedding"],
+  ["Ironing", "iron", "Wash and iron clothes and bed sheets"],
+  ["Women in trades", "bolt", "A woman electrician or painter to work in my flat"]
+];
+const IC = {
+  drop: "M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z", bolt: "M13 2L4 14h7l-1 8 9-12h-7z",
+  snow: "M12 2v20M4 6l16 12M20 6L4 18", washer: "M5 3h14v18H5zM12 18a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 6h.01M11 6h.01",
+  chair: "M7 3h10v9H7zM5 12h14v3H5zM7 15v6M17 15v6", box: "M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10",
+  sparkle: "M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM19 3v4M17 5h4", roller: "M4 4h14v5H4zM18 6h2v6h-9v3M10 15h2v6h-2z",
+  grid: "M4 4h16v16H4zM4 12h16M12 4v16", flame: "M12 3c3 4 6 6 6 10a6 6 0 0 1-12 0c0-3 2-4 3-6 1 2 2 3 3 3 0-3-1-5 0-7z",
+  key: "M7 14a4 4 0 1 1 3.5-6H21v4h-3v3h-3l-1.5-1.5H10.5A4 4 0 0 1 7 14zM7 10h.01", car: "M5 16h14v-4l-2-5H7l-2 5zM5 16v3M19 16v3M7.5 13h.01M16.5 13h.01",
+  needle: "M19 5L7 17M17 3l4 4-2 2-4-4zM7 17l-3 4 4-3", yarn: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM5 8c5 0 10 3 13 8M3.5 13c5-1 10 1 12 6M9 3.5c3 4 4 9 3 14",
+  pot: "M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 7c0-2 2-2 2-4M14 7c0-2 2-2 2-4",
+  scissors: "M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8.1 7.9L20 20M8.1 16.1L20 4",
+  iron: "M3 17h18v-3a6 6 0 0 0-6-6H8l-5 9zM7 8V5h6", pencil: "M4 20h4L19 9l-4-4L4 16zM14 6l4 4",
+  home: "M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z", bag: "M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2",
+  chat: "M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z", list: "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01",
+  tool: "M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z", cal: "M4 6h16v14H4zM4 10h16M9 3v4M15 3v4",
+  user: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0", back: "M19 12H5M11 6l-6 6 6 6", check: "M20 6L9 17l-5-5",
+  pin: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21zM12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
+  clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2", money: "M3 7h18v10H3zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+  phone: "M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z", send: "M5 12h14M13 6l6 6-6 6",
+  out: "M10 4H5v16h5M14 8l4 4-4 4M18 12H9", camera: "M4 8h3l2-3h6l2 3h3v11H4zM12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z",
+  search: "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-3.5-3.5", x: "M6 6l12 12M18 6L6 18", plus: "M12 5v14M5 12h14",
+  card: "M3 6h18v12H3zM3 10h18", wallet: "M4 7h15v12H4zM4 7l11-3v3M16 13h.01", truck: "M3 6h11v10H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+  edit: "M4 20h4L19 9l-4-4L4 16z", sun: "M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2",
+  moon: "M21 13a9 9 0 1 1-10-10 7 7 0 0 0 10 10z", sunrise: "M5 18a7 7 0 0 1 14 0M12 3v4M3 18h18M5.6 8.6l1.4 1.4M18.4 8.6L17 10"
+};
+const ic = (n, size = 24, color = "currentColor", w = 2) =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IC[n] || IC.tool}"></path></svg>`;
+const avatar = (p, size = 48) => `<span class="avatar" style="width:${size}px;height:${size}px;background:${tint(p)};font-size:${Math.round(size / 2.8)}px">${esc(initials(p.name))}</span>`;
+const personOf = name => ({ name, id: name.length * 3 });
+const starRow = r => { const n = Math.round(r || 0); return n ? `<span class="stars" aria-label="${r.toFixed(1)} out of 5">${"★".repeat(n)}<i>${"★".repeat(5 - n)}</i></span> <b class="small">${r.toFixed(1)}</b>` : `<span class="tag">New</span>`; };
+const face = (mood, size = 60) => {
+  const mouth = mood === "happy" ? "M8 14.5c1 1.8 2.4 2.5 4 2.5s3-.7 4-2.5" : mood === "ok" ? "M8.5 15.5h7" : "M8 17c1-1.8 2.4-2.5 4-2.5s3 .7 4 2.5";
+  const c = mood === "happy" ? ["#E7F5EB", "#1F7A3E"] : mood === "ok" ? ["#FFF5DA", "#8A6400"] : ["#FBEDED", "#A12F2F"];
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="${c[0]}" stroke="${c[1]}" stroke-width="1.5"/><circle cx="9" cy="10" r="1.2" fill="${c[1]}"/><circle cx="15" cy="10" r="1.2" fill="${c[1]}"/><path d="${mouth}" fill="none" stroke="${c[1]}" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+};
+const logo = `<svg width="32" height="21" viewBox="0 0 34 22" aria-hidden="true"><circle cx="8" cy="11" r="7" fill="none" stroke="#5B2FCB" stroke-width="3"/><circle cx="26" cy="11" r="7" fill="#5B2FCB"/><path d="M15 11h4" stroke="#5B2FCB" stroke-width="3" stroke-linecap="round"/></svg>`;
+const areaOptions = sel => Object.keys(AREAS).map(a => `<option ${a === sel ? "selected" : ""}>${a}</option>`).join("");
+const badgeClass = s => ({ requested: "possible", confirmed: "strong", onway: "strong", done: "warn", paid: "done", declined: "bad", cancelled: "bad" }[s]);
+const SLOT_IC = { morning: "sunrise", afternoon: "sun", evening: "moon" };
+
+/* ---------- state ---------- */
+const blankAddr = area => ({ label: "", area: area || "Maadi", line: "", details: "", landmark: "" });
+const S = {
+  user: null, screen: "login", stack: [], area: "Maadi", toast: "", authErr: "",
+  su: { role: "client", name: "", phone: "", pin: "", area: "Maadi" },
+  login: { phone: "", pin: "" },
+  q: "", active: null, results: null, filt: { sort: "best", women: false, top: false, near: false },
+  edit: { text: "", area: "Maadi", reqId: null },
+  sel: null, convoId: null, draftMsg: "", offerOpen: false, offer: { price: 0, note: "" },
+  bf: null, bfErr: "", bookingId: null, resched: { day: null, slot: null }, cancelReason: "", rateVal: 0, rateText: "",
+  shopCat: "All", shopQ: "", productId: null, pq: 1, pnote: "", bk: { addr: 0, na: blankAddr(), pay: "cash" }, bkErr: "",
+  meAddrOpen: false, na: blankAddr(), cardNum: "", cseg: "active",
+  me: null, prices: {}, passed: new Set(), wseg: "new", schedDay: 0, meEdit: null, npOpen: false, np: { name: "", price: "", cat: "Home", days: "5", desc: "" }, npErr: "",
+  setup: { step: 1, task: null, area: "Shubra", bio: "" }, declineFor: null
+};
+const meEmail = () => S.user?.email;
+const isClient = () => S.user?.role === "client";
+const C = () => client(meEmail());
+const getPath = path => path.split(".").reduce((o, k) => o?.[k], S);
+function setPath(path, val) { const ks = path.split("."); let o = S; ks.slice(0, -1).forEach(k => { o = o[k]; }); o[ks[ks.length - 1]] = val; }
+const bind = (path) => `data-bind="${path}"`;
+const val = path => esc(getPath(path) ?? "");
+
+/* ---------- counts for badges ---------- */
+function unreadFor() {
+  if (!S.user) return 0;
+  if (isClient()) return CONVOS.filter(c => c.clientEmail === meEmail() && c.msgs.slice(c.readC).some(m => m.from !== "c")).length;
+  return S.me ? CONVOS.filter(c => c.workerId === S.me.id && c.msgs.slice(c.readW).some(m => m.from !== "w")).length : 0;
+}
+function bookingBadge() {
+  if (!S.user) return 0;
+  if (isClient()) return BOOKINGS.filter(b => b.clientEmail === meEmail() && b.status === "done").length;
+  return S.me ? BOOKINGS.filter(b => b.workerId === S.me.id && b.status === "requested").length : 0;
+}
+const myConvos = () => (isClient() ? CONVOS.filter(c => c.clientEmail === meEmail()) : CONVOS.filter(c => c.workerId === S.me?.id))
+  .filter(c => c.msgs.length).sort((a, b) => lastMsg(b).at - lastMsg(a).at);
+const myBookings = () => (isClient() ? BOOKINGS.filter(b => b.clientEmail === meEmail()) : BOOKINGS.filter(b => b.workerId === S.me?.id));
+
+/* =========================================================
+   Screens. Each returns { title | top, body, tabs?, composer?, topExtra? }
+   ========================================================= */
+const SC = {};
+const signOutBtn = `<button class="icon-btn" data-act="logout" aria-label="Sign out">${ic("out", 22)}</button>`;
+
+/* ---------- sign in ---------- */
+SC.login = () => ({
+  top: `<span class="logo">${logo}<b>wasila</b></span>`,
+  body: `
+<section class="hero-in">
+  <h2 class="h-xl" style="color:#fff">Skilled people near you</h2>
+  <p style="color:#E4DBFF">Plumbers, electricians, tailors, cooks and makers in Cairo. Tell us what you need and book the right person.</p>
+</section>
+<form id="loginForm" class="stack" novalidate>
+  <div class="field"><label for="lPhone">Phone number</label><input type="tel" id="lPhone" ${bind("login.phone")} value="${val("login.phone")}" inputmode="numeric" autocomplete="tel" placeholder="010 1234 5678"></div>
+  <div class="field"><label for="lPin">PIN (4 numbers)</label><input type="password" id="lPin" ${bind("login.pin")} inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="••••"></div>
+  ${S.authErr ? `<p class="error" role="alert">${esc(S.authErr)}</p>` : ""}
+  <button class="btn" type="submit">Sign in</button>
+  <button class="btn alt" type="button" data-go="signup">Create an account</button>
+</form>
+<section class="section">
+  <h2 class="h-m">Demo accounts</h2>
+  <p class="small muted">Tap a name to sign in. Every PIN is <b>${PIN}</b>.</p>
+  ${ACCOUNTS.filter(a => a.phone).map(a => { const p = a.role === "pro" ? byName(a.name) : personOf(a.name);
+    return `<button class="person-btn" data-act="quickLogin" data-email="${esc(a.email)}">${avatar(p, 48)}<span class="grow stack" style="gap:0">
+      <b>${esc(a.name)}</b><span class="small muted">${a.role === "client" ? "Hiring · " + esc(a.area || "") : esc(p.trade) + " · " + esc(p.area)}</span><span class="tiny num muted">${esc(a.phone)}</span></span></button>`; }).join("")}
+</section>`
+});
+
+SC.signup = () => ({
+  title: "Create an account",
+  body: `
+<div class="stack">
+  <span style="font-weight:700">I want to</span>
+  <button class="choice" data-act="suRole" data-v="client" aria-pressed="${S.su.role === "client"}">${ic("home", 28, "#5B2FCB")} Hire someone</button>
+  <button class="choice" data-act="suRole" data-v="pro" aria-pressed="${S.su.role === "pro"}">${ic("tool", 28, "#5B2FCB")} Offer my work</button>
+</div>
+<form id="signupForm" class="stack" novalidate>
+  <div class="field"><label for="suName">Your name</label><input type="text" id="suName" ${bind("su.name")} value="${val("su.name")}" autocomplete="name" placeholder="Salma Fathy"></div>
+  <div class="field"><label for="suPhone">Phone number</label><input type="tel" id="suPhone" ${bind("su.phone")} value="${val("su.phone")}" inputmode="numeric" autocomplete="tel" placeholder="010 1234 5678"></div>
+  <div class="field"><label for="suPin">Choose a 4-number PIN</label><input type="password" id="suPin" ${bind("su.pin")} inputmode="numeric" maxlength="4" placeholder="••••"></div>
+  <div class="field"><label for="suArea">Your area</label><select id="suArea" ${bind("su.area")}>${areaOptions(S.su.area)}</select></div>
+  ${S.authErr ? `<p class="error" role="alert">${esc(S.authErr)}</p>` : ""}
+  <button class="btn" type="submit">Create account</button>
+  <p class="tiny muted">Demo only: new accounts disappear when you reload the page.</p>
+</form>`
+});
+
+/* ---------- client: home ---------- */
+SC.home = () => {
+  const open = ALL_REQUESTS.filter(r => r.owner === meEmail() && r.status === "open").slice(0, 3);
+  const women = rankAll(() => .5, people.filter(p => p.woman && ["craft", "home", "trades"].includes(p.group)), S.area).all
+    .sort((a, b) => b.p.rating - a.p.rating || (a.km ?? 0) - (b.km ?? 0)).slice(0, 6);
+  return {
+    top: `<span class="logo">${logo}<b>wasila</b></span>
+      <label class="chip-btn">${ic("pin", 18, "#5B2FCB")}<span class="sr">Your area</span><select id="area" style="border:0;min-height:0;padding:0;font:600 15px var(--font-body);background:none;width:auto">${areaOptions(S.area)}</select></label>
+      <button class="icon-btn" data-go="me" aria-label="My account">${avatar(personOf(S.user.name), 36)}</button>`,
+    tabs: true,
+    body: `
+<section class="stack">
+  <h2 class="h-xl">Hi ${esc(first(S.user.name))}, what do you need?</h2>
+  <form id="searchForm" class="searchbar" role="search"><label for="q" class="sr">Describe the job</label>
+    <input type="text" id="q" ${bind("q")} value="${val("q")}" placeholder="e.g. my kitchen tap is leaking" autocomplete="off">
+    <button class="btn" type="submit" aria-label="Search">${ic("search", 22, "#fff")}</button></form>
+  <div class="tiles">${TASKS.map((t, i) => `<button class="tile" data-act="task" data-i="${i}"><span class="ic">${ic(t[1], 28, "#5B2FCB")}</span>${t[0]}</button>`).join("")}</div>
+</section>
+${open.length ? `<section class="section"><div class="row between"><h2 class="h-m">Your open requests</h2><button class="link" data-go="me">All</button></div>${open.map(r => {
+  const offers = CONVOS.filter(c => c.clientEmail === meEmail() && c.msgs.some(m => m.type === "offer" && m.status === "open" && m.reqId === r.id)).length;
+  return `<button class="card tap" data-act="openReq" data-id="${r.id}"><div class="row">${ic(r.icon, 26, "#5B2FCB")}<b class="grow">${esc(r.label || r.text)}</b>${offers ? `<span class="badge strong">${offers} ${offers === 1 ? "price" : "prices"}</span>` : `<span class="badge possible">Open</span>`}</div>
+  <span class="small muted">Posted ${esc(r.ago)}</span></button>`; }).join("")}</section>` : ""}
+<section class="spot">
+  <div class="stack" style="gap:4px"><span class="label" style="color:#D9CCFF">Spotlight</span><h2 class="h-l" style="color:#fff">Women-run work</h2>
+    <p style="color:#E4DBFF;font-size:16px">Seamstresses, home cooks, crochet makers and women in the trades, near you.</p></div>
+  <div class="tiles">${WOMEN_TASKS.map((t, i) => `<button class="tile" data-act="wtask" data-i="${i}"><span class="ic">${ic(t[1], 26, "#5B2FCB")}</span>${t[0]}</button>`).join("")}</div>
+</section>
+<section class="section">
+  <h2 class="h-m">Top-rated women near ${esc(S.area)}</h2>
+  <div class="hscroll">${women.map(x => `<button class="card tap" data-act="profile" data-id="${x.p.id}">
+    <div class="row">${avatar(x.p, 52)}<span class="stack grow" style="gap:0"><b class="name">${esc(x.p.name)}</b><span class="trade">${esc(x.p.trade)}</span></span></div>
+    <div class="row">${starRow(x.p.rating)}</div><span class="small muted">${x.km == null ? "Online or nearby" : Math.max(1, Math.round(x.km)) + " km away"}</span></button>`).join("")}</div>
+</section>
+<section class="section">
+  <div class="row between"><h2 class="h-m">Handmade near you</h2><button class="link" data-tab="shop">See all</button></div>
+  <div class="hscroll">${PRODUCTS.filter(x => x.available).slice(0, 6).map(x => productCard(x, true)).join("")}</div>
+</section>`
+  };
+};
+
+/* ---------- search ---------- */
+SC.type = () => ({
+  title: S.edit.reqId ? "Edit your request" : "Describe the job",
+  body: `
+<div class="field"><label for="eText">What do you need done?</label>
+<textarea id="eText" ${bind("edit.text")} placeholder="My kitchen tap is leaking">${val("edit.text")}</textarea></div>
+<div class="field"><label for="eArea">Where?</label><select id="eArea" ${bind("edit.area")}>${areaOptions(S.edit.area)}</select></div>
+<button class="btn" data-act="typeGo">${S.edit.reqId ? "Save and find people" : "Find people"}</button>`
+});
+
+function filterResults(R) {
+  let list = R.all.filter(x => x.strength !== "weak");
+  const f = S.filt;
+  if (f.women) list = list.filter(x => x.p.woman);
+  if (f.top) list = list.filter(x => x.p.rating >= 4.7);
+  if (f.near) list = list.filter(x => x.km != null && x.km <= 10);
+  if (f.sort === "near") list.sort((a, b) => (a.km ?? 99) - (b.km ?? 99));
+  if (f.sort === "price") list.sort((a, b) => priceFor(a.p) - priceFor(b.p));
+  if (f.sort === "rating") list.sort((a, b) => b.p.rating - a.p.rating);
+  return list;
+}
+SC.results = () => {
+  const r = S.active, R = S.results;
+  const reqCard = `<div class="card" style="background:var(--tint)">
+    <div class="row">${ic(r.icon || "pencil", 28, "#5B2FCB")}<span class="grow"><b>${esc(r.label || r.text)}</b><br><span class="small muted">${esc(r.area)}${r.draft ? "" : " · posted"}</span></span>
+    <button class="icon-btn" data-act="editReq" aria-label="Edit request">${ic("edit", 20)}</button></div>
+    ${r.draft ? `<button class="btn quiet sm" data-act="postReq">Post it, so people send you prices</button>` : `<span class="small muted">${ic("check", 16, "#1F7A3E", 3)} Posted. Workers near you can send prices.</span>`}
+  </div>`;
+  if (!R) return { title: "Finding people", body: reqCard + `<div class="center" style="padding:40px 0"><div class="spinner"></div><p class="muted">Looking near ${esc(r.area)}…</p></div>` };
+  const list = filterResults(R), f = S.filt;
+  const shown = list.length ? list.slice(0, 12) : R.all.slice(0, 3);
+  return {
+    title: list.length ? `${list.length} ${list.length === 1 ? "person" : "people"} can help` : "Closest people",
+    body: `${reqCard}
+<div class="pills" role="group" aria-label="Sort">${[["best", "Best match"], ["near", "Nearest"], ["price", "Cheapest"], ["rating", "Top rated"]].map(([v, l]) => `<button class="pill-btn" data-act="sort" data-v="${v}" aria-pressed="${f.sort === v}">${l}</button>`).join("")}</div>
+<div class="pills" role="group" aria-label="Filters">${[["women", "Women only"], ["top", "4.7 stars and up"], ["near", "Within 10 km"]].map(([k, l]) => `<button class="pill-btn check" data-act="filt" data-v="${k}" aria-pressed="${f[k]}">${f[k] ? ic("check", 16, "#fff", 3) : ""}${l}</button>`).join("")}</div>
+${!list.length ? `<p class="notice">${f.women || f.top || f.near ? "Nobody matches these filters. Try turning one off." : "Nobody clearly does this yet. Post your request and we'll tell people. These are the closest people."}</p>` : ""}
+${R.tooFar ? `<p class="small muted">${R.tooFar} more ${R.tooFar > 1 ? "people match but don't" : "person matches but doesn't"} travel to ${esc(r.area)}.</p>` : ""}
+${shown.map(x => personCard(x.p, x.km)).join("")}`
+  };
+};
+function personCard(p, km) {
+  return `<article class="card">
+  <button class="who" data-act="profile" data-id="${p.id}">${avatar(p, 60)}<span class="stack grow" style="gap:1px">
+    <span class="name">${esc(p.name)}</span><span class="trade">${esc(p.trade)}${p.woman ? ` <span class="tag">Woman-run</span>` : ""}</span><span>${starRow(p.rating)} <span class="tiny muted">(${p.jobs} jobs)</span></span></span></button>
+  <div class="facts"><span>${ic("pin", 18)} ${km == null ? (p.mode === "remote" ? "Online" : "Nearby") : Math.max(1, Math.round(km)) + " km away"}</span><span>${ic("money", 18)} About ${money(priceFor(p))}</span></div>
+  <div class="btns"><button class="btn alt sm" data-act="message" data-id="${p.id}">${ic("chat", 20)} Message</button><button class="btn sm" data-act="book" data-id="${p.id}">Book</button></div>
+</article>`;
+}
+
+/* ---------- worker profile seen by a client ---------- */
+SC.profile = () => {
+  const p = people[S.sel];
+  const km = p.mode === "remote" ? null : haversineKm(AREAS[S.area], AREAS[p.area]);
+  const items = PRODUCTS.filter(x => x.maker === p.name && x.available);
+  return {
+    title: p.name,
+    body: `
+<div class="center">${avatar(p, 96)}<h2 class="h-l">${esc(p.name)}</h2><span class="trade" style="font-size:17px">${esc(p.trade)}${p.woman ? ` <span class="tag">Woman-run</span>` : ""}</span><div>${starRow(p.rating)} <span class="small muted">· ${p.jobs} jobs</span></div></div>
+<div class="card" style="gap:10px;font-size:16px">
+  <div class="row">${ic("pin", 20, "#5B2FCB")}<span>${esc(p.area)}${km != null ? `, ${Math.max(1, Math.round(km))} km from you` : ""}${p.mode !== "remote" ? ` · travels up to ${p.travel} km` : ""}</span></div>
+  <div class="row">${ic("money", 20, "#5B2FCB")}<span>Usually about ${money(priceFor(p))}</span></div>
+  <div class="row">${ic("phone", 20, "#5B2FCB")}<b class="num">${esc(phoneOf(p))}</b></div>
+  <div class="row">${ic("clock", 20, "#5B2FCB")}<span>${p.available === false ? "Not taking jobs right now" : "Taking jobs this week"}</span></div>
+</div>
+<section class="section"><h2 class="h-m">About</h2><p style="font-size:17px">${esc(p.bio)}</p></section>
+${items.length ? `<section class="section"><h2 class="h-m">Handmade by ${esc(first(p.name))}</h2>${items.map(x => productCard(x)).join("")}</section>` : ""}
+<section class="section"><h2 class="h-m">Reviews</h2>${p.reviews.length ? p.reviews.map(reviewCard).join("") : `<p class="muted small">No reviews yet.</p>`}</section>
+${isClient() ? `<div class="btns"><a class="btn alt" href="tel:${digits(phoneOf(p))}">${ic("phone", 20)} Call</a><button class="btn alt" data-act="message" data-id="${p.id}">${ic("chat", 20)} Message</button></div>
+<button class="btn" data-act="book" data-id="${p.id}">Book ${esc(first(p.name))}</button>` : ""}`
+  };
+};
+const reviewCard = r => `<div class="card" style="gap:4px"><div class="row between"><b>${esc(r.who)}</b><span class="stars">${"★".repeat(r.rating)}<i>${"★".repeat(5 - r.rating)}</i></span></div>${r.text ? `<p class="small">${esc(r.text)}</p>` : ""}</div>`;
+
+/* ---------- address and payment pickers ---------- */
+function addrPicker(path) {
+  const st = getPath(path), list = C().addresses;
+  return `<div class="stack" role="group" aria-label="Address">
+  ${list.map((a, i) => `<button class="choice" data-act="pickAddr" data-path="${path}" data-v="${i}" aria-pressed="${st.addr === i}">${ic("pin", 24, "#5B2FCB")}<span class="grow"><b>${esc(a.label || "Address")}</b><br><span class="small muted" style="font-weight:500">${esc(addrText(a))}</span></span></button>`).join("")}
+  <button class="choice" data-act="pickAddr" data-path="${path}" data-v="new" aria-pressed="${st.addr === "new"}">${ic("plus", 24, "#5B2FCB")} A new address</button>
+  ${st.addr === "new" ? `<div class="card" style="background:var(--tint)">
+    <div class="field"><label for="${path}Area">Area</label><select id="${path}Area" ${bind(path + ".na.area")}>${areaOptions(st.na.area)}</select></div>
+    <div class="field"><label for="${path}Line">Building and street</label><input type="text" id="${path}Line" ${bind(path + ".na.line")} value="${val(path + ".na.line")}" placeholder="Building 5, Street 12"></div>
+    <div class="field"><label for="${path}Det">Floor and flat</label><input type="text" id="${path}Det" ${bind(path + ".na.details")} value="${val(path + ".na.details")}" placeholder="3rd floor, flat 6"></div>
+    <div class="field"><label for="${path}Land">Landmark (optional)</label><input type="text" id="${path}Land" ${bind(path + ".na.landmark")} value="${val(path + ".na.landmark")}" placeholder="Next to the pharmacy"></div>
+  </div>` : ""}</div>`;
+}
+function payPicker(path) {
+  const cur = getPath(path), card = C().card;
+  return `<div class="stack" role="group" aria-label="Payment">${[["cash", "money", "Cash", "Pay the worker after the job"], ["card", "card", "Card", card ? `${card}, charged after the job` : "Add your card when you pay"], ["wallet", "wallet", "Mobile wallet", "InstaPay or a wallet, after the job"]]
+    .map(([v, i, l, d]) => `<button class="choice" data-act="pickPay" data-path="${path}" data-v="${v}" aria-pressed="${cur === v}">${ic(i, 24, "#5B2FCB")}<span class="grow"><b>${l}</b><br><span class="small muted" style="font-weight:500">${esc(d)}</span></span></button>`).join("")}</div>`;
+}
+function dayGrid(act, cur) {
+  return `<div class="daygrid">${[0, 1, 2, 3, 4, 5, 6].map(o => `<button class="daychip" data-act="${act}" data-v="${o}" aria-pressed="${cur === o}"><span class="tiny">${o === 0 ? "Today" : o === 1 ? "Tomorrow" : dayShort(o)}</span><b>${dayDate(o).getDate()}</b></button>`).join("")}</div>`;
+}
+function slotPicker(act, cur) {
+  return `<div class="stack">${Object.entries(SLOTS).map(([k, l]) => `<button class="choice" data-act="${act}" data-v="${k}" aria-pressed="${cur === k}">${ic(SLOT_IC[k], 24, "#5B2FCB")} ${l}</button>`).join("")}</div>`;
+}
+
+/* ---------- booking form ---------- */
+SC.bookForm = () => {
+  const b = S.bf, p = people[b.workerId];
+  return {
+    title: `Book ${first(p.name)}`,
+    body: `
+<div class="row">${avatar(p, 56)}<div class="stack grow" style="gap:0"><b class="name">${esc(p.name)}</b><span class="trade">${esc(p.trade)}</span></div>
+  <div class="stack" style="gap:0;text-align:right"><span class="tiny muted">${b.priceFixed ? "Agreed price" : "About"}</span><span class="price">${money(b.price)}</span></div></div>
+<div class="field"><label for="bfTitle">What's the job?</label><input type="text" id="bfTitle" ${bind("bf.title")} value="${val("bf.title")}" placeholder="Fix a leaking kitchen tap"></div>
+<section class="section"><h2 class="h-m">Which day?</h2>${dayGrid("bfDay", b.day)}</section>
+<section class="section"><h2 class="h-m">What time?</h2>${slotPicker("bfSlot", b.slot)}</section>
+<section class="section"><h2 class="h-m">Where?</h2>${addrPicker("bf")}</section>
+<div class="field"><label for="bfNotes">Notes for ${esc(first(p.name))} (optional)</label><textarea id="bfNotes" ${bind("bf.notes")} placeholder="Ring the bell twice. The tap is under the kitchen sink.">${val("bf.notes")}</textarea></div>
+<section class="section"><h2 class="h-m">How will you pay?</h2>${payPicker("bf.pay")}</section>
+<div class="card" style="background:var(--tint);gap:8px">
+  <div class="kv"><span class="muted">${b.priceFixed ? "Agreed price" : "Estimated price"}</span><span>${money(b.price)}</span></div>
+  <div class="kv"><span class="muted">Booking fee</span><span>Free</span></div>
+  <p class="small muted">${b.priceFixed ? "This price is agreed in your chat." : `${esc(first(p.name))} confirms the final price before starting.`} You pay only after the work is finished.</p>
+</div>
+${S.bfErr ? `<p class="error" role="alert">${esc(S.bfErr)}</p>` : ""}
+<button class="btn" data-act="submitBooking">${b.priceFixed ? "Book now" : "Send booking request"}</button>`
+  };
+};
+
+SC.bookSent = () => {
+  const b = BOOKINGS.find(x => x.id === S.bookingId), p = people[b.workerId], ok = b.status === "confirmed";
+  return {
+    title: ok ? "Booked" : "Request sent",
+    body: `
+<div class="center" style="padding-top:6px"><div class="bigcheck" style="${ok ? "" : "background:var(--purple)"}">${ic(ok ? "check" : "clock", 54, "#fff", 3)}</div>
+<h2 class="h-xl">${ok ? "Booked!" : "Request sent"}</h2>
+<p style="font-size:18px">${ok ? `${esc(p.name)} will come ${esc(dayName(b.day).toLowerCase())}, ${esc(SLOTS[b.slot].toLowerCase())}.` : `${esc(first(p.name))} usually replies within an hour. We'll show it in Bookings and Messages.`}</p></div>
+${bookingSummary(b)}
+<div class="btns"><a class="btn alt" href="tel:${digits(phoneOf(p))}">${ic("phone", 20)} Call</a><button class="btn alt" data-act="openConvoOf" data-id="${b.id}">${ic("chat", 20)} Message</button></div>
+<button class="btn" data-act="openBooking" data-id="${b.id}">See booking</button>`
+  };
+};
+function bookingSummary(b) {
+  const worker = !isClient();
+  const showAddr = !(worker && b.status === "requested");
+  return `<div class="card" style="gap:10px;font-size:16px">
+  <div class="row">${ic(b.kind === "order" ? "truck" : "cal", 22, "#5B2FCB")}<span>${b.kind === "order" ? `Ready by ${esc(dayName(b.day))}` : `${esc(dayName(b.day))}, ${esc(SLOTS[b.slot] || "")}`}</span></div>
+  <div class="row" style="align-items:flex-start">${ic("pin", 22, "#5B2FCB")}<span>${showAddr ? esc(addrText(b.address)) + (b.address?.landmark ? `<br><span class="small muted">${esc(b.address.landmark)}</span>` : "") : `${esc(b.address.area)}<br><span class="small muted">Full address after you accept</span>`}</span></div>
+  <div class="row">${ic(b.pay === "card" ? "card" : b.pay === "wallet" ? "wallet" : "money", 22, "#5B2FCB")}<span>${money(b.price)} · ${PAY[b.pay]}</span></div>
+  ${b.notes ? `<div class="row" style="align-items:flex-start">${ic("pencil", 22, "#5B2FCB")}<span>${esc(b.notes)}</span></div>` : ""}
+  ${b.items ? b.items.map(it => { const x = PRODUCTS[it.productId]; return `<div class="row" style="align-items:flex-start">${ic("bag", 22, "#5B2FCB")}<span>${esc(x.name)} ×${it.qty}${it.note ? `<br><span class="small muted">“${esc(it.note)}”</span>` : ""}</span></div>`; }).join("") : ""}
+</div>`;
+}
+
+/* ---------- bookings list and detail ---------- */
+SC.bookings = () => {
+  const all = myBookings().slice().reverse();
+  if (!isClient()) {
+    const groups = { new: all.filter(b => b.status === "requested"), upcoming: all.filter(b => ["confirmed", "onway", "done"].includes(b.status)), past: all.filter(b => ["paid", "declined", "cancelled"].includes(b.status)) };
+    const list = groups[S.wseg];
+    return {
+      title: "Bookings", tabs: true,
+      body: `<div class="seg" role="group" aria-label="Show">${[["new", "New"], ["upcoming", "Upcoming"], ["past", "Past"]].map(([k, l]) => `<button data-act="wseg" data-v="${k}" aria-pressed="${S.wseg === k}">${l} · ${groups[k].length}</button>`).join("")}</div>
+      ${list.length ? list.map(bookingCard).join("") : `<p class="notice">${S.wseg === "new" ? "No new booking requests. They show up here when a client books you." : S.wseg === "upcoming" ? "Nothing coming up yet." : "No past jobs yet."}</p>`}`
+    };
+  }
+  const groups = { active: all.filter(b => ACTIVE.includes(b.status)), past: all.filter(b => !ACTIVE.includes(b.status)) };
+  return {
+    title: "My bookings", tabs: true,
+    body: `<div class="seg" role="group" aria-label="Show">${[["active", "Active"], ["past", "Past"]].map(([k, l]) => `<button data-act="cseg" data-v="${k}" aria-pressed="${S.cseg === k}">${l} · ${groups[k].length}</button>`).join("")}</div>
+    ${groups[S.cseg].length ? groups[S.cseg].map(bookingCard).join("") : `<div class="empty"><p class="muted">${S.cseg === "active" ? "No active bookings." : "No past bookings yet."}</p><button class="btn" data-tab="home">Find someone</button></div>`}`
+  };
+};
+function bookingCard(b) {
+  const other = isClient() ? people[b.workerId] : (b.clientEmail ? personOf(ACCOUNTS.find(a => a.email === b.clientEmail)?.name || b.clientName) : personOf(b.clientName));
+  const need = isClient() ? b.status === "done" : b.status === "requested";
+  return `<button class="card tap" data-act="openBooking" data-id="${b.id}" style="${need ? "border:2px solid var(--purple)" : ""}">
+    <div class="row">${avatar(other, 48)}<span class="stack grow" style="gap:0"><b>${esc(b.title)}</b><span class="small muted">${esc(other.name)}${b.kind === "order" ? " · order" : ""}</span></span><span class="badge ${badgeClass(b.status)}">${statusText(b)}</span></div>
+    <div class="facts"><span>${ic(b.kind === "order" ? "truck" : "cal", 18)} ${esc(dayName(b.day))}${b.slot ? ", " + esc(SLOTS[b.slot].split(",")[0].toLowerCase()) : ""}</span><span>${ic("money", 18)} ${money(b.price)}</span></div>
+    ${need ? `<span class="small" style="color:var(--purple-dark);font-weight:700">${isClient() ? "Confirm and pay" : "Reply to this request"} ${ic("send", 16)}</span>` : ""}
+  </button>`;
+}
+
+SC.booking = () => {
+  const b = BOOKINGS.find(x => x.id === S.bookingId), p = people[b.workerId], client = isClient();
+  const clientName = b.clientEmail ? (ACCOUNTS.find(a => a.email === b.clientEmail)?.name || b.clientName) : b.clientName;
+  const other = client ? p : personOf(clientName);
+  const otherPhone = client ? phoneOf(p) : (b.clientEmail ? ACCOUNTS.find(a => a.email === b.clientEmail)?.phone : clientPhone(b.clientName));
+  const bot = client ? !p.account : !b.clientEmail;
+  const order = b.kind === "order";
+  const explain = {
+    requested: client ? `Waiting for ${first(p.name)} to accept.` : `${first(clientName)} wants to book you. Accept or decline.`,
+    confirmed: client ? (order ? `${first(p.name)} is making your order.` : `${first(p.name)} will come ${dayName(b.day).toLowerCase()}.`) : (order ? "Make the order, then send it for delivery." : `You're booked for ${dayName(b.day).toLowerCase()}.`),
+    onway: client ? (order ? "Your order is on its way." : `${first(p.name)} is on the way.`) : (order ? "Out for delivery." : "Tap Job is done when you finish."),
+    done: client ? (order ? "Delivered. Check it, then pay." : "The work is finished. Check it, then pay.") : `Waiting for ${first(clientName)} to pay ${money(b.price)}.`,
+    paid: client ? `Paid ${money(b.price)}. Thank you!` : `${first(clientName)} paid ${money(b.price)}.`,
+    declined: client ? `${first(p.name)} can't take this one.` : "You declined this request.",
+    cancelled: "This booking was cancelled."
+  }[b.status];
+  let actions = "";
+  if (client) {
+    if (b.status === "done") actions = `<button class="btn green" data-act="payRate">${ic("money", 22, "#fff")} Pay ${money(b.price)}</button>`;
+    if (["confirmed", "onway"].includes(b.status) && bot) actions += `<button class="btn quiet" data-act="simDone">${order ? "Mark as delivered (demo)" : "Mark the work as finished (demo)"}</button>`;
+    if (!order && ["requested", "confirmed"].includes(b.status)) actions += `<div class="btns"><button class="btn alt sm" data-act="resched">Change day or time</button><button class="btn alt sm danger" data-go="cancel">Cancel booking</button></div>`;
+    if (order && b.status === "requested") actions += `<button class="btn alt danger" data-go="cancel">Cancel order</button>`;
+    if (b.status === "declined") actions += `<button class="btn" data-act="findOthers">Find someone else</button>`;
+  } else {
+    if (b.status === "requested") actions = `<div class="btns"><button class="btn alt sm danger" data-act="declineOpen">Decline</button><button class="btn sm" data-act="wAccept">${order ? "Accept and start" : "Accept"}</button></div>`
+      + (S.declineFor === b.id ? `<div class="card" style="background:var(--tint)"><b>Why are you declining?</b>${["Too far for me", "I'm busy at that time", "This isn't my kind of work"].map(r => `<button class="choice" data-act="wDecline" data-v="${r}">${r}</button>`).join("")}</div>` : "");
+    if (b.status === "confirmed") actions = `<button class="btn" data-act="wOnway">${order ? ic("truck", 22, "#fff") + " Sent for delivery" : ic("send", 22, "#fff") + " I'm on my way"}</button><button class="btn alt danger" data-go="cancel">Cancel this booking</button>`;
+    if (b.status === "onway") actions = `<button class="btn green" data-act="wDone">${ic("check", 22, "#fff", 3)} ${order ? "Delivered" : "Job is done"}</button>`;
+  }
+  return {
+    title: b.title,
+    body: `
+<div class="card">
+  <div class="row">${avatar(other, 56)}<span class="stack grow" style="gap:0"><b class="name">${esc(other.name)}</b><span class="small muted">${client ? esc(p.trade) : (b.clientEmail ? "Wasila client" : "Client")}</span></span></div>
+  <div class="btns"><a class="btn alt sm" href="tel:${digits(otherPhone || "")}">${ic("phone", 20)} ${esc(otherPhone || "")}</a><button class="btn alt sm" data-act="openConvoOf" data-id="${b.id}">${ic("chat", 20)} Message</button></div>
+</div>
+<div class="status-box ${badgeClass(b.status)}"><span class="badge ${badgeClass(b.status)}">${statusText(b)}</span><p>${esc(explain)}</p></div>
+${actions ? `<div class="stack">${actions}</div>` : ""}
+${bookingSummary(b)}
+${b.rating ? `<div class="card" style="gap:4px"><span class="label">${client ? "Your rating" : "Client's rating"}</span><span class="stars">${"★".repeat(b.rating)}<i>${"★".repeat(5 - b.rating)}</i></span>${b.review ? `<p class="small">${esc(b.review)}</p>` : ""}</div>` : ""}
+<section class="section"><h2 class="h-m">History</h2><ol class="timeline">${b.events.map(e => `<li><span class="tiny muted num">${clock(e.at)}</span><span>${esc(e.text)}</span></li>`).join("")}</ol></section>`
+  };
+};
+
+SC.reschedule = () => ({
+  title: "Change day or time",
+  body: `<section class="section"><h2 class="h-m">New day</h2>${dayGrid("rsDay", S.resched.day)}</section>
+<section class="section"><h2 class="h-m">New time</h2>${slotPicker("rsSlot", S.resched.slot)}</section>
+<p class="small muted">${esc(first(people[BOOKINGS.find(x => x.id === S.bookingId).workerId].name))} has to confirm the new time.</p>
+<button class="btn" data-act="rsSave">Send new time</button>`
+});
+
+SC.cancel = () => ({
+  title: "Cancel",
+  body: `<h2 class="h-l">Why are you cancelling?</h2>
+<div class="stack">${(isClient() ? ["I found someone else", "I don't need it anymore", "The time doesn't work", "Something else"] : ["I can't make it", "The client asked me to cancel", "Something else"])
+  .map(r => `<button class="choice" data-act="cReason" data-v="${r}" aria-pressed="${S.cancelReason === r}">${r}</button>`).join("")}</div>
+<button class="btn danger-fill" data-act="cConfirm" ${S.cancelReason ? "" : "disabled"}>Yes, cancel it</button>
+<button class="btn alt" data-act="back">Keep the booking</button>`
+});
+
+SC.rate = () => {
+  const b = BOOKINGS.find(x => x.id === S.bookingId), p = people[b.workerId];
+  const payLabel = b.pay === "cash" ? `I paid ${money(b.price)} in cash` : b.pay === "wallet" ? `I paid ${money(b.price)} by wallet` : `Pay ${money(b.price)} by card`;
+  const card = C().card;
+  return {
+    title: "Pay and rate",
+    body: `
+<div class="center">${avatar(p, 84)}<h2 class="h-l">How did ${esc(first(p.name))} do?</h2></div>
+<div class="faces">${[["happy", 5, "Happy"], ["ok", 3, "OK"], ["sad", 1, "Not happy"]].map(([m, v, l]) => `<button class="face" data-act="rateVal" data-v="${v}" aria-pressed="${S.rateVal === v}">${face(m)}${l}</button>`).join("")}</div>
+<div class="field"><label for="rateText">Want to say more? (optional)</label><textarea id="rateText" ${bind("rateText")} placeholder="What went well?">${val("rateText")}</textarea></div>
+<div class="card" style="background:var(--tint);gap:6px"><div class="kv"><span class="muted">Total</span><span>${money(b.price)}</span></div><div class="kv"><span class="muted">Paying by</span><span>${b.pay === "card" ? esc(card || "Card") : PAY[b.pay]}</span></div></div>
+${b.pay === "card" && !card ? `<div class="field"><label for="cardNum">Card number</label><input type="tel" id="cardNum" ${bind("cardNum")} value="${val("cardNum")}" inputmode="numeric" placeholder="4242 4242 4242 4242"><span class="tiny muted">Demo only. Don't type a real card.</span></div>` : ""}
+<button class="btn green" data-act="pay" ${S.rateVal ? "" : "disabled"}>${ic("money", 22, "#fff")} ${payLabel}</button>
+${!S.rateVal ? `<p class="small muted center">Pick a face first.</p>` : ""}`
+  };
+};
+
+/* ---------- messages ---------- */
+SC.messages = () => {
+  const list = myConvos();
+  return {
+    title: "Messages", tabs: true,
+    body: list.length ? list.map(c => {
+      const other = isClient() ? people[c.workerId] : personOf(c.clientEmail ? (ACCOUNTS.find(a => a.email === c.clientEmail)?.name || c.clientName) : c.clientName);
+      const last = lastMsg(c), unread = isClient() ? c.msgs.slice(c.readC).some(m => m.from !== "c") : c.msgs.slice(c.readW).some(m => m.from !== "w");
+      const preview = last.type === "offer" ? `Price: ${money(last.price)}` : last.type === "photo" ? "Photo" : last.type === "request" ? "Request: " + last.text : last.text;
+      return `<button class="card tap" data-act="chat" data-id="${c.id}" style="flex-direction:row;align-items:center;${unread ? "border:2px solid var(--purple)" : ""}">${avatar(other, 52)}
+        <span class="stack grow" style="gap:1px"><span class="row between"><b class="name">${esc(other.name)}</b><span class="tiny muted">${clock(last.at)}</span></span>
+        <span class="small ${unread ? "" : "muted"}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${unread ? "font-weight:700" : ""}">${esc(preview)}</span></span></button>`;
+    }).join("") : `<div class="empty"><p class="muted">No messages yet.</p>${isClient() ? `<button class="btn" data-tab="home">Find someone</button>` : ""}</div>`
+  };
+};
+
+SC.chat = () => {
+  const c = CONVOS.find(x => x.id === S.convoId), client = isClient();
+  const p = people[c.workerId];
+  const otherName = client ? p.name : (c.clientEmail ? (ACCOUNTS.find(a => a.email === c.clientEmail)?.name || c.clientName) : c.clientName);
+  const otherPhone = client ? phoneOf(p) : (c.clientEmail ? ACCOUNTS.find(a => a.email === c.clientEmail)?.phone : clientPhone(c.clientName));
+  const mine = client ? "c" : "w";
+  const offerOpen = openOffer(c);
+  const body = c.msgs.map(m => {
+    const side = m.from === mine ? "me" : "them";
+    if (m.from === "sys") return `<p class="sys">${esc(m.text)}</p>`;
+    if (m.type === "request") return `<div class="bubble ${side}"><span class="tiny" style="opacity:.8;font-weight:700">${client ? "YOUR REQUEST" : "REQUEST"}</span><br>${esc(m.text)}<span class="mtime">${clock(m.at)}</span></div>`;
+    if (m.type === "photo") return `<div class="bubble ${side} photo-bubble"><img src="${m.src}" alt="Photo sent in chat"><span class="mtime">${clock(m.at)}</span></div>`;
+    if (m.type === "offer") {
+      const st = m.status;
+      return `<div class="offer ${st !== "open" ? "dim" : ""}">
+        <div class="row between"><span class="label" style="color:var(--purple-dark)">Price from ${esc(first(p.name))}</span><span class="price" style="font-size:24px">${money(m.price)}</span></div>
+        <span style="font-weight:600">${esc(m.title || "")}</span>${m.note ? `<span class="small muted">${esc(m.note)}</span>` : ""}
+        ${st === "accepted" ? `<span class="badge done" style="align-self:flex-start">Accepted</span>` : st === "replaced" ? `<span class="badge possible" style="align-self:flex-start">Replaced by a newer price</span>`
+          : client ? `<button class="btn" data-act="acceptOffer" data-id="${m.id}">Accept and book</button>` : `<span class="badge possible" style="align-self:flex-start">Waiting for ${esc(first(otherName))}</span>`}
+        <span class="tiny muted">${clock(m.at)}</span></div>`;
+    }
+    return `<div class="bubble ${side}">${esc(m.text)}<span class="mtime">${clock(m.at)}</span></div>`;
+  }).join("");
+  const quick = client ? (offerOpen ? ["Can you do it for less?", "When are you free?", "Can you send photos of your work?"] : ["How much would it cost?", "When are you free?", "Can you send photos of your work?"]) : ["I'm on my way", "Can you send a photo of the problem?", "What time suits you?"];
+  return {
+    title: otherName, composer: true,
+    topExtra: `<a class="icon-btn" href="tel:${digits(otherPhone || "")}" aria-label="Call ${esc(otherName)}">${ic("phone", 22, "#5B2FCB")}</a>`,
+    body: `<div class="thread">${body}</div>
+<div class="pills" style="margin-top:6px">${quick.map(q => `<button class="pill-btn" data-act="quick" data-v="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+${!client ? (S.offerOpen ? `<div class="card" style="border:2px solid var(--purple)"><b>Send a price</b>
+  <div class="stepper"><button data-act="ofMinus" aria-label="Lower">−</button><b>${money(S.offer.price)}</b><button data-act="ofPlus" aria-label="Higher">+</button></div>
+  <div class="field"><label for="ofNote">What's included (optional)</label><input type="text" id="ofNote" ${bind("offer.note")} value="${val("offer.note")}" placeholder="Parts included"></div>
+  <div class="btns"><button class="btn alt sm" data-act="ofClose">Close</button><button class="btn sm" data-act="ofSend">Send price</button></div></div>`
+  : `<button class="btn quiet sm" data-act="ofOpen">${ic("money", 20)} Send a price</button>`) : ""}`
+  };
+};
+
+/* ---------- shop ---------- */
+function productCard(x, compact) {
+  const m = byName(x.maker);
+  return `<article class="product"><button class="art-btn" data-act="product" data-id="${x.id}" aria-label="${esc(x.name)}"><div class="art" style="background-color:${x.colour}"><span>[Photo: ${esc(x.name.toLowerCase())}]</span></div></button>
+  <div class="body"><div class="row between" style="align-items:flex-start"><button class="link-plain" data-act="product" data-id="${x.id}"><b style="font-size:17px">${esc(x.name)}</b></button><span class="price">${money(x.price)}</span></div>
+  <span class="small muted">${esc(m.name)} · ${esc(m.area)}</span>
+  ${compact ? "" : `<span class="small muted">Ready in ${x.days} ${x.days === 1 ? "day" : "days"}</span>`}
+  <button class="btn sm" data-act="addBasket" data-id="${x.id}">${ic("bag", 20, "#fff")} Add to basket</button></div></article>`;
+}
+const basketCount = () => C().basket.reduce((s, i) => s + i.qty, 0);
+const basketBtn = () => `<button class="icon-btn" data-go="basket" aria-label="Basket, ${basketCount()} items" style="position:relative">${ic("bag", 22, "#5B2FCB")}${basketCount() ? `<span class="topdot">${basketCount()}</span>` : ""}</button>`;
+SC.shop = () => {
+  const cats = ["All", ...new Set(PRODUCTS.map(x => x.cat))];
+  const q = S.shopQ.trim().toLowerCase();
+  const list = PRODUCTS.filter(x => x.available && (S.shopCat === "All" || x.cat === S.shopCat) && (!q || `${x.name} ${x.desc} ${x.maker}`.toLowerCase().includes(q)));
+  return {
+    title: "Handmade", tabs: true, topExtra: basketBtn(),
+    body: `
+<form id="shopSearch" class="searchbar" role="search"><label for="sq" class="sr">Search handmade</label><input type="text" id="sq" ${bind("shopQ")} value="${val("shopQ")}" placeholder="Search: blanket, necklace, food" autocomplete="off"><button class="btn" type="submit" aria-label="Search">${ic("search", 22, "#fff")}</button></form>
+<div class="pills" role="group" aria-label="Category">${cats.map(c => `<button class="pill-btn" data-act="cat" data-v="${c}" aria-pressed="${S.shopCat === c}">${c}</button>`).join("")}</div>
+${list.length ? list.map(x => productCard(x)).join("") : `<p class="notice">Nothing found. Try another word or category.</p>`}
+<p class="small muted">Most items are made by women working from home. Every item is made to order.</p>`
+  };
+};
+SC.product = () => {
+  const x = PRODUCTS[S.productId], m = byName(x.maker);
+  return {
+    title: x.name, topExtra: basketBtn(),
+    body: `
+<div class="art" style="background-color:${x.colour};aspect-ratio:4/3;border-radius:20px"><span>[Photo: ${esc(x.name.toLowerCase())}]</span></div>
+<div class="row between" style="align-items:flex-start"><h2 class="h-l">${esc(x.name)}</h2><span class="price" style="font-size:24px">${money(x.price)}</span></div>
+<p style="font-size:17px">${esc(x.desc)}</p>
+<div class="facts"><span>${ic("clock", 18)} Ready in ${x.days} ${x.days === 1 ? "day" : "days"}</span><span>${ic("truck", 18)} Delivery 60 EGP</span></div>
+<button class="card tap" data-act="profile" data-id="${m.id}" style="flex-direction:row;align-items:center">${avatar(m, 48)}<span class="stack grow" style="gap:0"><b>${esc(m.name)}</b><span class="small muted">${esc(m.trade)} · ${esc(m.area)}</span></span>${starRow(m.rating)}</button>
+<div class="field"><span style="font-weight:700">How many?</span><div class="stepper"><button data-act="pqMinus" aria-label="Fewer">−</button><b>${S.pq}</b><button data-act="pqPlus" aria-label="More">+</button></div></div>
+<div class="field"><label for="pNote">Colours, name or size you want (optional)</label><input type="text" id="pNote" ${bind("pnote")} value="${val("pnote")}" placeholder="White and mint"></div>
+<button class="btn" data-act="addBasketQty" data-id="${x.id}">${ic("bag", 20, "#fff")} Add to basket · ${money(x.price * S.pq)}</button>
+<button class="btn alt" data-act="askMaker" data-id="${x.id}">${ic("chat", 20)} Ask ${esc(first(m.name))} a question</button>`
+  };
+};
+SC.basket = () => {
+  const items = C().basket;
+  if (!items.length) return { title: "Basket", body: `<div class="empty"><p class="muted">Your basket is empty.</p><button class="btn" data-tab="shop">Browse handmade</button></div>` };
+  const byMaker = {};
+  items.forEach((it, i) => { const x = PRODUCTS[it.productId]; (byMaker[x.maker] ||= []).push({ ...it, i, x }); });
+  const makers = Object.keys(byMaker);
+  const sub = items.reduce((s, it) => s + PRODUCTS[it.productId].price * it.qty, 0), del = makers.length * 60;
+  return {
+    title: "Basket",
+    body: `
+${makers.map(mk => `<section class="card"><div class="row">${avatar(byName(mk), 36)}<b class="grow">From ${esc(mk)}</b></div>
+  ${byMaker[mk].map(it => `<div class="basket-row"><div class="stack grow" style="gap:0"><b>${esc(it.x.name)}</b>${it.note ? `<span class="small muted">“${esc(it.note)}”</span>` : ""}<span class="small">${money(it.x.price)} each</span></div>
+    <div class="mini-step"><button data-act="bMinus" data-v="${it.i}" aria-label="Fewer">−</button><b>${it.qty}</b><button data-act="bPlus" data-v="${it.i}" aria-label="More">+</button></div></div>`).join("")}
+  <span class="tiny muted">One delivery from ${esc(first(mk))}: 60 EGP</span></section>`).join("")}
+<section class="section"><h2 class="h-m">Deliver to</h2>${addrPicker("bk")}</section>
+<section class="section"><h2 class="h-m">How will you pay?</h2>${payPicker("bk.pay")}</section>
+<div class="card" style="background:var(--tint);gap:6px">
+  <div class="kv"><span class="muted">Items</span><span>${money(sub)}</span></div><div class="kv"><span class="muted">Delivery</span><span>${money(del)}</span></div>
+  <div class="kv" style="font-size:19px"><span>Total</span><span>${money(sub + del)}</span></div><p class="small muted">You pay when it arrives.</p></div>
+${S.bkErr ? `<p class="error" role="alert">${esc(S.bkErr)}</p>` : ""}
+<button class="btn" data-act="placeOrder">Place order${makers.length > 1 ? `s (${makers.length})` : ""}</button>`
+  };
+};
+
+/* ---------- client account ---------- */
+SC.me = () => {
+  if (!isClient()) return SC.wme();
+  const c = C(), reqs = ALL_REQUESTS.filter(r => r.owner === meEmail());
+  return {
+    title: "My account",
+    body: `
+<div class="center">${avatar(personOf(S.user.name), 80)}<h2 class="h-l">${esc(S.user.name)}</h2><span class="num muted">${esc(S.user.phone)}</span></div>
+<section class="section"><h2 class="h-m">My requests</h2>${reqs.length ? reqs.map(r => `<button class="card tap" data-act="openReq" data-id="${r.id}" style="flex-direction:row;align-items:center">${ic(r.icon, 26, "#5B2FCB")}<span class="grow"><b>${esc(r.label || r.text)}</b><br><span class="small muted">${esc(r.ago)}</span></span><span class="badge ${r.status === "open" ? "strong" : "possible"}">${r.status === "open" ? "Open" : r.status === "booked" ? "Booked" : "Closed"}</span></button>`).join("") : `<p class="muted small">No requests yet.</p>`}</section>
+<section class="section"><h2 class="h-m">Addresses</h2>
+${c.addresses.map((a, i) => `<div class="card" style="flex-direction:row;align-items:center">${ic("pin", 24, "#5B2FCB")}<span class="grow"><b>${esc(a.label || "Address")}</b><br><span class="small muted">${esc(addrText(a))}</span></span><button class="icon-btn" data-act="delAddr" data-v="${i}" aria-label="Remove address">${ic("x", 20)}</button></div>`).join("")}
+${S.meAddrOpen ? `<div class="card" style="background:var(--tint)">
+  <div class="field"><label for="naLabel">Name it</label><input type="text" id="naLabel" ${bind("na.label")} value="${val("na.label")}" placeholder="Home, Mum's flat, Work"></div>
+  <div class="field"><label for="naArea">Area</label><select id="naArea" ${bind("na.area")}>${areaOptions(S.na.area)}</select></div>
+  <div class="field"><label for="naLine">Building and street</label><input type="text" id="naLine" ${bind("na.line")} value="${val("na.line")}"></div>
+  <div class="field"><label for="naDet">Floor and flat</label><input type="text" id="naDet" ${bind("na.details")} value="${val("na.details")}"></div>
+  <div class="btns"><button class="btn alt sm" data-act="naClose">Cancel</button><button class="btn sm" data-act="naSave">Save address</button></div></div>`
+  : `<button class="btn alt sm" data-act="naOpen">${ic("plus", 20)} Add an address</button>`}</section>
+<section class="section"><h2 class="h-m">Payment</h2>
+${c.card ? `<div class="card" style="flex-direction:row;align-items:center">${ic("card", 24, "#5B2FCB")}<b class="grow">${esc(c.card)}</b><button class="icon-btn" data-act="delCard" aria-label="Remove card">${ic("x", 20)}</button></div>`
+  : `<div class="field"><label for="meCard">Add a card (demo, don't use a real one)</label><input type="tel" id="meCard" ${bind("cardNum")} value="${val("cardNum")}" inputmode="numeric" placeholder="4242 4242 4242 4242"></div><button class="btn alt sm" data-act="saveCard">Save card</button>`}
+<p class="small muted">You can always pay in cash or by mobile wallet after the job.</p></section>
+<button class="btn alt" data-act="logout">${ic("out", 20)} Sign out</button>`
+  };
+};
+
+SC.req = () => {
+  const r = ALL_REQUESTS.find(x => x.id === S.reqId);
+  const offers = CONVOS.filter(c => c.clientEmail === meEmail()).map(c => ({ c, m: [...c.msgs].reverse().find(m => m.type === "offer" && m.reqId === r.id && m.status === "open") })).filter(x => x.m);
+  return {
+    title: "Your request",
+    body: `
+<div class="card"><div class="row">${ic(r.icon, 30, "#5B2FCB")}<b class="grow" style="font-size:18px">${esc(r.label || r.text)}</b><span class="badge ${r.status === "open" ? "strong" : "possible"}">${r.status === "open" ? "Open" : r.status === "booked" ? "Booked" : "Closed"}</span></div>
+<p>${esc(r.text)}</p><span class="small muted">${esc(r.area)} · posted ${esc(r.ago)}</span></div>
+<section class="section"><h2 class="h-m">Prices you got</h2>${offers.length ? offers.map(({ c, m }) => { const p = people[c.workerId];
+  return `<div class="card"><button class="who" data-act="profile" data-id="${p.id}">${avatar(p, 48)}<span class="stack grow" style="gap:0"><b>${esc(p.name)}</b><span class="trade">${esc(p.trade)}</span>${starRow(p.rating)}</span><span class="price">${money(m.price)}</span></button>
+  ${m.note ? `<p class="small muted">${esc(m.note)}</p>` : ""}<div class="btns"><button class="btn alt sm" data-act="chat" data-id="${c.id}">${ic("chat", 20)} Chat</button><button class="btn sm" data-act="acceptOfferIn" data-c="${c.id}" data-id="${m.id}">Accept and book</button></div></div>`; }).join("")
+  : `<p class="muted small">No prices yet. Workers near you who fit the job can send you one.</p>`}</section>
+${r.status === "open" ? `<button class="btn" data-act="reqFind">Find people now</button><div class="btns"><button class="btn alt sm" data-act="reqEdit">${ic("edit", 20)} Edit</button><button class="btn alt sm danger" data-act="reqClose">Close request</button></div>` : ""}`
+  };
+};
+
+/* ---------- worker ---------- */
+SC.jobs = () => {
+  const me = S.me;
+  const reqs = ALL_REQUESTS.filter(r => isOpen(r) && !r.draft && r.owner !== meEmail() && !S.passed.has(r.id));
+  const sent = id => CONVOS.some(c => c.workerId === me.id && c.msgs.some(m => m.type === "offer" && m.reqId === id && m.from === "w"));
+  const here = AREAS[me.area];
+  const scored = S.jobScores || {};
+  const list = reqs.map(r => ({ r, s: scored[r.id] ?? keywordSim(profileText(me), r.ask), km: me.mode === "remote" ? null : haversineKm(here, AREAS[r.area]) }))
+    .filter(x => x.s >= POSSIBLE && (x.km == null || me.mode === "both" || x.km <= me.travel)).sort((a, b) => b.s - a.s);
+  return {
+    top: `<span class="logo">${logo}<b>wasila</b></span>${signOutBtn}`, tabs: true,
+    body: `
+<div class="row">${avatar(me, 56)}<div class="stack grow" style="gap:0"><h2 class="h-l">Hi ${esc(first(me.name))}</h2><span class="trade">${esc(me.trade)} · ${esc(me.area)}</span></div></div>
+<button class="toggle" data-act="avail" aria-pressed="${!!me.available}" style="min-height:56px;font-size:16px"><span class="track"><span class="knob"></span></span>${me.available ? "I'm taking jobs" : "I'm not taking jobs"}</button>
+${bookingBadge() ? `<button class="card tap" data-tab="bookings" style="border:2px solid var(--purple);flex-direction:row;align-items:center">${ic("cal", 26, "#5B2FCB")}<b class="grow">${bookingBadge()} booking ${bookingBadge() === 1 ? "request" : "requests"} waiting for you</b>${ic("send", 20)}</button>` : ""}
+<h2 class="h-m">Jobs near you</h2>
+${!me.available ? `<p class="notice">Turn on "I'm taking jobs" to see new jobs and appear in searches.</p>`
+  : list.length ? list.map(x => { const done = sent(x.r.id), price = S.prices[x.r.id] ?? priceFor(me);
+    return `<article class="card">
+      <b style="font-size:18px;line-height:1.3">${esc(x.r.ask)}</b>
+      <div class="facts"><span>${ic("user", 18)} ${esc(x.r.client)}</span><span>${ic("pin", 18)} ${esc(x.r.area)}${x.km != null ? `, ${Math.max(1, Math.round(x.km))} km` : ""}</span><span>${ic("money", 18)} ${esc(x.r.budget)}</span><span>${ic("clock", 18)} ${esc(x.r.ago)}</span></div>
+      ${done ? `<p class="row" style="color:var(--green);font-weight:700">${ic("check", 22, "#1F7A3E", 3)} Price sent. You'll see the reply in Messages.</p>`
+      : `<span class="small" style="font-weight:700">Your price</span>
+        <div class="stepper"><button data-act="pminus" data-id="${x.r.id}" aria-label="Lower">−</button><b>${money(price)}</b><button data-act="pplus" data-id="${x.r.id}" aria-label="Higher">+</button></div>
+        <div class="btns"><button class="btn alt sm" data-act="pass" data-id="${x.r.id}">Not for me</button><button class="btn sm" data-act="sendPrice" data-id="${x.r.id}">Send price</button></div>`}
+    </article>`; }).join("")
+  : `<p class="notice">No new jobs that fit you right now. New ones show up here.</p>`}`
+  };
+};
+
+SC.schedule = () => {
+  const mine = BOOKINGS.filter(b => b.workerId === S.me.id && ["confirmed", "onway", "done"].includes(b.status));
+  const items = mine.filter(b => b.day === S.schedDay).sort((a, b) => Object.keys(SLOTS).indexOf(a.slot) - Object.keys(SLOTS).indexOf(b.slot));
+  return {
+    title: "Schedule", tabs: true,
+    body: `
+<div class="days">${[0, 1, 2, 3, 4, 5, 6].map(i => `<button class="day" data-act="day" data-v="${i}" aria-pressed="${S.schedDay === i}"><span class="tiny" style="font-weight:700">${i === 0 ? "Today" : dayShort(i)}</span><b>${dayDate(i).getDate()}</b><i style="background:${mine.some(b => b.day === i) ? (S.schedDay === i ? "#fff" : "var(--purple)") : "transparent"}"></i></button>`).join("")}</div>
+<h2 class="h-m">${esc(dayName(S.schedDay))}</h2>
+${items.length ? items.map(b => `<button class="card tap" data-act="openBooking" data-id="${b.id}">
+  <div class="row">${ic(b.kind === "order" ? "truck" : SLOT_IC[b.slot] || "clock", 26, "#5B2FCB")}<b class="grow">${b.kind === "order" ? "Delivery due" : esc(SLOTS[b.slot])}</b><span class="badge ${badgeClass(b.status)}">${statusText(b)}</span></div>
+  <b>${esc(b.title)}</b><span class="small muted">${esc(b.clientName)} · ${esc(addrText(b.address))}</span></button>`).join("")
+  : `<p class="muted">Nothing booked this day.</p>`}
+<p class="small muted">${mine.length} upcoming ${mine.length === 1 ? "job" : "jobs"} this week.</p>`
+  };
+};
+
+SC.wme = () => {
+  const me = S.me;
+  if (!S.meEdit) S.meEdit = { bio: me.bio, area: me.area, travel: me.travel || 15 };
+  const paid = BOOKINGS.filter(b => b.workerId === me.id && b.status === "paid");
+  const earned = paid.reduce((s, b) => s + b.price, 0);
+  const pending = BOOKINGS.filter(b => b.workerId === me.id && b.status === "done").reduce((s, b) => s + b.price, 0);
+  const items = PRODUCTS.filter(x => x.maker === me.name);
+  const canSell = items.length || ["craft", "home", "user"].includes(me.group);
+  return {
+    title: "My profile", tabs: true,
+    body: `
+<div class="center">${avatar(me, 88)}<h2 class="h-l">${esc(me.name)}</h2><span class="trade">${esc(me.trade)}</span><div>${starRow(me.rating)} <span class="small muted">· ${me.jobs} jobs</span></div><b class="num">${esc(phoneOf(me))}</b></div>
+<div class="earn"><span class="small" style="opacity:.85">Earned on Wasila</span><b>${money(earned)}</b><span class="small" style="opacity:.9">${paid.length} paid ${paid.length === 1 ? "job" : "jobs"}${pending ? ` · ${money(pending)} waiting for payment` : ""}</span></div>
+<section class="section"><h2 class="h-m">How clients find you</h2>
+<div class="field"><label for="meBio">What you do, in your own words</label><textarea id="meBio" ${bind("meEdit.bio")}>${val("meEdit.bio")}</textarea></div>
+<div class="field"><label for="meArea">Your area</label><select id="meArea" ${bind("meEdit.area")}>${areaOptions(S.meEdit.area)}</select></div>
+<div class="field"><label for="meTravel">I travel up to <b id="meTravelOut">${S.meEdit.travel} km</b></label><input type="range" id="meTravel" ${bind("meEdit.travel")} min="2" max="40" value="${S.meEdit.travel}"></div>
+<button class="btn" data-act="saveMe">Save</button></section>
+${canSell ? `<section class="section"><h2 class="h-m">My handmade items</h2>
+${items.map(x => `<div class="card"><div class="row"><b class="grow">${esc(x.name)}</b><button class="toggle" data-act="itemToggle" data-id="${x.id}" aria-pressed="${x.available}" style="min-height:40px"><span class="track"><span class="knob"></span></span>${x.available ? "In shop" : "Hidden"}</button></div>
+  <div class="mini-step"><button data-act="itMinus" data-id="${x.id}" aria-label="Lower price">−</button><b>${money(x.price)}</b><button data-act="itPlus" data-id="${x.id}" aria-label="Higher price">+</button></div></div>`).join("")}
+${S.npOpen ? `<div class="card" style="background:var(--tint)">
+  <div class="field"><label for="npName">Item name</label><input type="text" id="npName" ${bind("np.name")} value="${val("np.name")}" placeholder="Crochet baby hat"></div>
+  <div class="field"><label for="npPrice">Price in EGP</label><input type="tel" id="npPrice" ${bind("np.price")} value="${val("np.price")}" inputmode="numeric" placeholder="250"></div>
+  <div class="field"><label for="npCat">Category</label><select id="npCat" ${bind("np.cat")}>${["Home", "Clothing", "Jewellery", "Food", "Gifts"].map(c => `<option ${c === S.np.cat ? "selected" : ""}>${c}</option>`).join("")}</select></div>
+  <div class="field"><label for="npDays">Days to make it</label><input type="tel" id="npDays" ${bind("np.days")} value="${val("np.days")}" inputmode="numeric"></div>
+  <div class="field"><label for="npDesc">Describe it</label><textarea id="npDesc" ${bind("np.desc")} placeholder="Soft cotton, any colour">${val("np.desc")}</textarea></div>
+  ${S.npErr ? `<p class="error" role="alert">${esc(S.npErr)}</p>` : ""}
+  <div class="btns"><button class="btn alt sm" data-act="npClose">Cancel</button><button class="btn sm" data-act="npSave">Add to shop</button></div></div>`
+  : `<button class="btn alt sm" data-act="npOpen">${ic("plus", 20)} Add an item</button>`}</section>` : ""}
+<section class="section"><h2 class="h-m">Reviews</h2>${me.reviews.length ? me.reviews.map(reviewCard).join("") : `<p class="muted small">No reviews yet.</p>`}</section>
+<button class="btn alt" data-act="logout">${ic("out", 20)} Sign out</button>`
+  };
+};
+
+SC.setup = () => {
+  const s = S.setup, all = [...TASKS, ...WOMEN_TASKS.slice(0, 5)];
+  if (s.step === 1) return {
+    top: `<span class="logo">${logo}<b>wasila</b></span>${signOutBtn}`,
+    body: `<h2 class="h-xl">What work do you do?</h2><div class="tiles">${all.map((t, i) => `<button class="tile" data-act="setupTask" data-i="${i}"><span class="ic">${ic(t[1], 28, "#5B2FCB")}</span>${t[0]}</button>`).join("")}</div>`
+  };
+  const t = all[s.task];
+  return {
+    title: "Your work",
+    body: `<div class="row notice">${ic(t[1], 28, "#5B2FCB")}<b>${t[0]}</b></div>
+<div class="field"><label for="setupArea">Where do you live?</label><select id="setupArea" ${bind("setup.area")}>${areaOptions(s.area)}</select></div>
+<div class="field"><label for="setupBio">Tell clients what you do (optional)</label><textarea id="setupBio" ${bind("setup.bio")} placeholder="For example: I fix leaking taps and water heaters.">${val("setup.bio")}</textarea></div>
+<button class="btn" data-act="setupDone">Start getting jobs</button>`
+  };
+};
+
+/* =========================================================
+   Render, navigation, sample-user replies and actions
+   ========================================================= */
+const CLIENT_TABS = [["home", "Home", "home"], ["shop", "Handmade", "bag"], ["messages", "Messages", "chat"], ["bookings", "Bookings", "list"]];
+const PRO_TABS = [["jobs", "Jobs", "tool"], ["bookings", "Bookings", "cal"], ["messages", "Messages", "chat"], ["schedule", "Schedule", "clock"], ["me", "Profile", "user"]];
+
+function render() {
+  const name = S.user ? S.screen : (S.screen === "signup" ? "signup" : "login");
+  if (S.user && name === "chat") { const c = CONVOS.find(x => x.id === S.convoId); if (c) { if (isClient()) c.readC = c.msgs.length; else c.readW = c.msgs.length; } }
+  const view = (SC[name] || SC.home)();
+  const tabs = S.user ? (isClient() ? CLIENT_TABS : PRO_TABS) : null;
+  const unread = unreadFor(), bBadge = bookingBadge();
+  const top = view.top || (view.tabs ? `<h1 style="padding-left:4px">${esc(view.title || "")}</h1>${view.topExtra || ""}`
+    : `<button class="icon-btn" data-act="back" aria-label="Back">${ic("back", 24)}</button><h1>${esc(view.title || "")}</h1>${view.topExtra || ""}`);
+  const ae = document.activeElement, fid = ae && ae.id;
+  let selRange = null; try { if (fid && ae.selectionStart != null) selRange = [ae.selectionStart, ae.selectionEnd]; } catch (e) { }
+  document.getElementById("app").innerHTML = `<div class="app">
+  <header class="top">${top}</header>
+  <main class="${view.tabs ? "" : "no-tabs"}"${view.composer ? ' style="padding-bottom:120px"' : ""}>${view.body}</main>
+  ${view.tabs && tabs ? `<nav class="tabs" aria-label="Main">${tabs.map(([s, l, i]) => { const n = s === "messages" ? unread : s === "bookings" ? bBadge : 0;
+    return `<button data-tab="${s}" ${S.screen === s ? 'aria-current="page"' : ""}>${ic(i, 26)}${l}${n ? `<span class="dot">${n}</span>` : ""}</button>`; }).join("")}</nav>` : ""}
+  ${view.composer ? `<form class="composer" id="chatForm"><label class="icon-btn photo-pick" aria-label="Send a photo">${ic("camera", 22, "#5B2FCB")}<input type="file" accept="image/*" id="chatPhoto" class="sr"></label><label for="msg" class="sr">Message</label><input type="text" id="msg" ${bind("draftMsg")} value="${val("draftMsg")}" placeholder="Write a message" autocomplete="off"><button class="btn" type="submit" aria-label="Send">${ic("send", 22, "#fff")}</button></form>` : ""}
+  ${S.toast ? `<div class="toast" role="status">${esc(S.toast)}</div>` : ""}
+</div>`;
+  if (fid && fid !== "chatPhoto") { const el = document.getElementById(fid); if (el) { try { el.focus({ preventScroll: true }); if (selRange) el.setSelectionRange(selRange[0], selRange[1]); } catch (e) { } } }
+  if (view.composer && S.scrollChat) { S.scrollChat = false; try { window.scrollTo(0, document.body.scrollHeight); } catch (e) { } }
+}
+const toTop = () => { try { window.scrollTo(0, 0); } catch (e) { } };
+function go(screen) { S.stack.push(S.screen); S.screen = screen; S.toast = ""; render(); toTop(); }
+function tab(screen) { S.stack = []; S.screen = screen; S.toast = ""; render(); toTop(); }
+function back() { S.screen = S.stack.pop() || (S.user ? (isClient() ? "home" : "jobs") : "login"); S.toast = ""; render(); }
+function toast(msg) { S.toast = msg; render(); clearTimeout(toast.t); toast.t = setTimeout(() => { S.toast = ""; render(); }, 3400); }
+const notifyClient = (email, msg) => { if (!S.user) return; if (isClient() && meEmail() === email) toast(msg); else render(); };
+const notifyWorker = (wid, msg) => { if (!S.user) return; if (!isClient() && S.me?.id === wid) toast(msg); else render(); };
+const later = (ms, fn) => setTimeout(() => { fn(); if (S.screen === "chat") S.scrollChat = true; }, ms);
+const shortText = t => t.length > 46 ? t.slice(0, 44) + "…" : t;
+
+/* ---------- sign in ---------- */
+function login(acc) {
+  S.user = acc; S.authErr = ""; S.stack = [];
+  S.active = null; S.results = null; S.bf = null; S.meEdit = null; S.prices = {}; S.passed = new Set(); S.jobScores = {};
+  S.login = { phone: "", pin: "" };
+  if (acc.role === "client") { client(acc.email); S.area = acc.area || "Maadi"; S.bk = { addr: C().addresses.length ? 0 : "new", na: blankAddr(S.area), pay: C().card ? "card" : "cash" }; tab("home"); return; }
+  S.me = people.find(p => p.account === acc.email) || null;
+  if (S.me) { tab("jobs"); scoreJobs(); }
+  else { S.setup = { step: 1, task: null, area: acc.area || "Shubra", bio: "" }; tab("setup"); }
+}
+function logout() { S.user = null; S.me = null; S.stack = []; S.screen = "login"; S.authErr = ""; render(); toTop(); }
+async function scoreJobs() {
+  const me = S.me; if (!me) return;
+  const reqs = ALL_REQUESTS.filter(r => isOpen(r) && !r.draft);
+  const sim = await similarityFn(profileText(me), reqs.map(r => r.ask));
+  if (S.me !== me) return;
+  S.jobScores = {}; reqs.forEach(r => { S.jobScores[r.id] = sim(r.ask); });
+  if (S.screen === "jobs") render();
+}
+
+/* ---------- search ---------- */
+function startSearch(label, icon, text, women) {
+  const req = makeRequest({ owner: meEmail(), client: first(S.user.name), area: S.area, text, label, icon, draft: true });
+  S.active = req; S.results = null; S.filt = { sort: "best", women: !!women, top: false, near: false };
+  go("results"); runMatch(req);
+}
+async function runMatch(req) {
+  const pool = people.filter(p => p.available !== false && p !== S.me);
+  const sim = await similarityFn(req.text, pool.map(profileText));
+  if (S.active !== req) return;
+  S.results = rankAll(sim, pool, req.area);
+  if (S.screen === "results") render();
+}
+
+/* ---------- sample workers and clients reply on their own ---------- */
+function botConfirm(b) {
+  const p = people[b.workerId];
+  later(2600, () => {
+    if (b.status !== "requested") return;
+    b.status = "confirmed";
+    logEvent(b, b.kind === "order" ? `${first(p.name)} accepted and started making it` : `${first(p.name)} accepted`);
+    addMsg(convoFor(b), { from: "w", type: "text", text: b.kind === "order" ? `Thank you! I'm starting on it now. It will be ready ${dayName(b.day).toLowerCase()}.` : `Confirmed for ${dayName(b.day).toLowerCase()}, ${SLOTS[b.slot].toLowerCase()}. I'll call before I come.` });
+    notifyClient(b.clientEmail, b.kind === "order" ? `${first(p.name)} accepted your order.` : `${first(p.name)} accepted your booking.`);
+  });
+}
+function botWorkerOffer(c, req) {
+  const p = people[c.workerId];
+  later(1800, () => {
+    if (c.msgs.some(m => m.type === "offer" && m.reqId === req.id)) return;
+    addMsg(c, { from: "w", type: "text", text: `Hi ${c.clientName}, I can help with this. Here's my price:` });
+    sendOffer(c, priceFor(p), req.label || shortText(req.text), req.id, "");
+    notifyClient(c.clientEmail, `${first(p.name)} sent you a price.`);
+  });
+}
+function botWorkerReply(c, text, isPhoto) {
+  const p = people[c.workerId], t = String(text || "").toLowerCase();
+  later(1500, () => {
+    if (isPhoto) addMsg(c, { from: "w", type: "text", text: "Thanks for the photo, that helps. I understand the job." });
+    else if (/cheap|less|lower|discount|too much|expensive/.test(t)) {
+      const last = [...c.msgs].reverse().find(m => m.type === "offer");
+      const base = last ? last.price : priceFor(p), np = Math.max(100, Math.round(base * 0.9 / 50) * 50);
+      addMsg(c, { from: "w", type: "text", text: "OK, I can do a better price for you:" });
+      const req = last?.reqId ? ALL_REQUESTS.find(r => r.id === last.reqId) : null;
+      sendOffer(c, np, last?.title || (req ? req.label || shortText(req.text) : p.trade), last?.reqId, "");
+    }
+    else if (/how much|price|cost/.test(t)) {
+      const req = [...c.msgs].reverse().find(m => m.type === "request");
+      addMsg(c, { from: "w", type: "text", text: "Here's my price:" });
+      sendOffer(c, priceFor(p), req ? shortText(req.text) : p.trade, req?.reqId, "");
+    }
+    else if (/when|time|today|tomorrow|free|available/.test(t)) addMsg(c, { from: "w", type: "text", text: "I'm free tomorrow morning or afternoon. You can pick the time when you book." });
+    else if (/photo|picture|work/.test(t)) addMsg(c, { from: "w", type: "text", text: "You can see my work and reviews on my profile. Happy to send more photos on WhatsApp too." });
+    else addMsg(c, { from: "w", type: "text", text: "Thanks, got it. Tell me if you have any questions." });
+    notifyClient(c.clientEmail, `New message from ${first(p.name)}.`);
+  });
+}
+function botClientAccept(c, offer, req) {
+  later(3200, () => {
+    if (offer.status !== "open") return;
+    offer.status = "accepted";
+    if (req) req.status = "booked";
+    addMsg(c, { from: "c", type: "text", text: "That works for me. Please come tomorrow afternoon." });
+    const area = req?.area || people[c.workerId].area;
+    newBooking({ clientEmail: null, clientName: c.clientName, workerId: c.workerId, title: offer.title || "Job", icon: "tool", reqId: req?.id, day: 1, slot: "afternoon",
+      address: fakeAddr(c.clientName, area), pay: "cash", price: offer.price, status: "confirmed" });
+    notifyWorker(c.workerId, `${c.clientName} accepted your price. It's in Bookings.`);
+  });
+}
+function botClientPay(b) {
+  later(2600, () => {
+    if (b.status !== "done") return;
+    const p = people[b.workerId];
+    b.status = "paid"; b.rating = 5; b.review = "Thank you, very good work.";
+    logEvent(b, `Paid ${money(b.price)} ${b.pay === "cash" ? "in cash" : "by " + PAY[b.pay].toLowerCase()}`);
+    p.reviews.unshift({ who: `${b.clientName}, ${b.address.area}`, rating: 5, tags: [], text: b.review });
+    p.rating = Math.round(((p.rating * p.jobs + 5) / (p.jobs + 1)) * 10) / 10; p.jobs += 1;
+    notifyWorker(b.workerId, `${b.clientName} paid you ${money(b.price)}.`);
+  });
+}
+function botClientReply(c) { later(1500, () => { addMsg(c, { from: "c", type: "text", text: "Thank you!" }); notifyWorker(c.workerId, `New message from ${c.clientName}.`); }); }
+
+/* ---------- chat ---------- */
+function openChat(id) { S.convoId = id; S.offerOpen = false; S.draftMsg = ""; S.scrollChat = true; go("chat"); }
+function openConvoWith(workerId) {
+  const c = convo(meEmail(), first(S.user.name), workerId), p = people[workerId], r = S.active;
+  if (r && r.owner === meEmail() && !c.msgs.some(m => m.type === "request" && m.reqId === r.id)) {
+    postRequest(r);
+    addMsg(c, { from: "c", type: "request", text: r.text, reqId: r.id });
+    if (!p.account) botWorkerOffer(c, r);
+  }
+  openChat(c.id);
+}
+function sendChat(text, photo) {
+  const c = CONVOS.find(x => x.id === S.convoId), mine = isClient() ? "c" : "w";
+  if (photo) addMsg(c, { from: mine, type: "photo", src: photo }); else addMsg(c, { from: mine, type: "text", text });
+  S.draftMsg = ""; S.scrollChat = true;
+  if (isClient() && !people[c.workerId].account) botWorkerReply(c, text, !!photo);
+  if (!isClient() && !c.clientEmail) botClientReply(c);
+  render();
+}
+
+/* ---------- booking ---------- */
+function startBooking(o) {
+  const c = C();
+  S.bf = { price: 0, priceFixed: false, offerId: null, convoId: null, reqId: null, title: "", icon: "tool", ...o,
+    day: null, slot: null, addr: c.addresses.length ? 0 : "new", na: blankAddr(S.area), notes: "", pay: c.card ? "card" : "cash" };
+  S.bfErr = ""; go("bookForm");
+}
+function bookFromSearch(workerId) {
+  const r = S.active && S.active.owner === meEmail() ? S.active : null;
+  startBooking({ workerId, price: priceFor(people[workerId]), reqId: r?.id || null, title: r ? (r.label || r.text) : "", icon: r?.icon || "tool" });
+}
+function acceptOffer(convoId, msgId) {
+  const c = CONVOS.find(x => x.id === convoId), m = c.msgs.find(x => x.id === msgId);
+  const req = m.reqId ? ALL_REQUESTS.find(r => r.id === m.reqId) : null;
+  startBooking({ workerId: c.workerId, price: m.price, priceFixed: true, offerId: m.id, convoId: c.id, reqId: m.reqId || null, title: m.title || (req ? req.label || req.text : ""), icon: req?.icon || "tool" });
+}
+function resolveAddress(st, errPrefix) {
+  const c = C();
+  if (st.addr === "new") {
+    if (st.na.line.trim().length < 3) return { err: "Write the building and street." };
+    const a = { ...st.na, label: st.na.label || (c.addresses.length ? `Address ${c.addresses.length + 1}` : "Home") };
+    c.addresses.push(a); st.addr = c.addresses.length - 1; st.na = blankAddr(S.area);
+    return { addr: a };
+  }
+  return { addr: c.addresses[st.addr] };
+}
+function submitBooking() {
+  const b = S.bf, p = people[b.workerId];
+  const err = m => { S.bfErr = m; render(); };
+  if (!b.title || b.title.trim().length < 3) return err("Write what the job is.");
+  if (b.day == null) return err("Pick a day.");
+  if (!b.slot) return err("Pick a time.");
+  const { addr, err: aErr } = resolveAddress(b); if (aErr) return err(aErr);
+  let req = b.reqId ? (ALL_REQUESTS.find(r => r.id === b.reqId) || (S.active?.id === b.reqId ? S.active : null)) : null;
+  if (req) { postRequest(req); req.status = "booked"; }
+  const cv = convo(meEmail(), first(S.user.name), p.id);
+  if (req && !cv.msgs.some(m => m.type === "request" && m.reqId === req.id)) addMsg(cv, { from: "c", type: "request", text: req.text, reqId: req.id });
+  if (b.offerId) { const m = CONVOS.find(x => x.id === b.convoId)?.msgs.find(x => x.id === b.offerId); if (m) m.status = "accepted"; }
+  const status = b.priceFixed ? "confirmed" : "requested";
+  const bk = newBooking({ clientEmail: meEmail(), clientName: first(S.user.name), workerId: p.id, title: b.title.trim(), icon: b.icon, reqId: req?.id, day: b.day, slot: b.slot,
+    address: addr, notes: b.notes.trim(), pay: b.pay, price: b.price, status });
+  addMsg(cv, { from: "sys", text: `${status === "confirmed" ? "Booked" : "Booking request sent"}: ${dayName(b.day)}, ${SLOTS[b.slot].toLowerCase()}` });
+  if (status === "requested" && !p.account) botConfirm(bk);
+  S.bookingId = bk.id; S.bf = null; S.stack = []; S.screen = "bookSent"; render(); toTop();
+}
+function placeOrder() {
+  const c = C();
+  if (!c.basket.length) return;
+  const { addr, err } = resolveAddress(S.bk); if (err) { S.bkErr = err; render(); return; }
+  const byMaker = {};
+  c.basket.forEach(it => { const x = PRODUCTS[it.productId]; (byMaker[x.maker] ||= []).push(it); });
+  Object.entries(byMaker).forEach(([mk, items]) => {
+    const p = byName(mk);
+    const price = items.reduce((s, it) => s + PRODUCTS[it.productId].price * it.qty, 0) + 60;
+    const title = items.length === 1 ? `${PRODUCTS[items[0].productId].name} ×${items[0].qty}` : `${items.reduce((s, i) => s + i.qty, 0)} handmade items`;
+    const b = newBooking({ kind: "order", clientEmail: meEmail(), clientName: first(S.user.name), workerId: p.id, title, icon: "bag", items: items.map(i => ({ ...i })),
+      day: Math.max(...items.map(i => PRODUCTS[i.productId].days)), slot: null, address: addr, pay: S.bk.pay, price, status: "requested" });
+    addMsg(convo(meEmail(), first(S.user.name), p.id), { from: "sys", text: `Order placed: ${title}` });
+    if (!p.account) botConfirm(b);
+  });
+  c.basket = []; S.bkErr = ""; S.cseg = "active";
+  tab("bookings"); toast(Object.keys(byMaker).length > 1 ? "Orders placed. Each maker will confirm." : "Order placed. The maker will confirm.");
+}
+
+/* ---------- clicks ---------- */
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-act],[data-go],[data-tab]");
+  if (!t || t.disabled) return;
+  if (t.dataset.tab) { tab(t.dataset.tab); return; }
+  if (t.dataset.go) {
+    S.authErr = "";
+    if (t.dataset.go === "cancel") S.cancelReason = "";
+    go(t.dataset.go); return;
+  }
+  const a = t.dataset.act, v = t.dataset.v, id = t.dataset.id, n = Number(id);
+  const B = () => BOOKINGS.find(x => x.id === S.bookingId);
+  switch (a) {
+    case "back": back(); break;
+    case "quickLogin": login(ACCOUNTS.find(x => x.email === t.dataset.email)); break;
+    case "logout": logout(); break;
+    case "suRole": S.su.role = v; render(); break;
+
+    // search
+    case "task": { const x = TASKS[Number(t.dataset.i)]; startSearch(x[0], x[1], x[2], false); break; }
+    case "wtask": { const x = WOMEN_TASKS[Number(t.dataset.i)]; startSearch(x[0], x[1], x[2], true); break; }
+    case "sort": S.filt.sort = v; render(); break;
+    case "filt": S.filt[v] = !S.filt[v]; render(); break;
+    case "editReq": { const r = S.active; S.edit = { text: r.text, area: r.area, reqId: r.draft ? null : r.id }; go("type"); break; }
+    case "postReq": {
+      postRequest(S.active); toast("Posted. Workers near you can now send you prices.");
+      (S.results?.all || []).filter(x => x.strength === "strong" && !x.p.account).slice(0, 2).forEach((x, i) => {
+        const c = convo(meEmail(), first(S.user.name), x.p.id), r = S.active;
+        later(2500 + i * 3000, () => { if (c.msgs.some(m => m.reqId === r.id)) return; addMsg(c, { from: "c", type: "request", text: r.text, reqId: r.id }); botWorkerOffer(c, r); });
+      });
+      break;
+    }
+    case "typeGo": {
+      const text = S.edit.text.trim();
+      if (text.length < 3) { toast("Write what you need first."); break; }
+      S.area = S.edit.area;
+      let r;
+      if (S.edit.reqId) { r = ALL_REQUESTS.find(x => x.id === S.edit.reqId); r.text = r.ask = text; r.area = S.edit.area; r.label = ""; }
+      else r = makeRequest({ owner: meEmail(), client: first(S.user.name), area: S.edit.area, text, label: "", icon: "pencil", draft: true });
+      S.active = r; S.results = null;
+      if (S.stack[S.stack.length - 1] === "results") { S.stack.pop(); S.screen = "results"; render(); toTop(); } else go("results");
+      runMatch(r); break;
+    }
+    case "profile": S.sel = n; go("profile"); break;
+    case "message": openConvoWith(n); break;
+    case "book": bookFromSearch(n); break;
+
+    // booking form
+    case "pickAddr": setPath(t.dataset.path + ".addr", v === "new" ? "new" : Number(v)); render(); break;
+    case "pickPay": setPath(t.dataset.path, v); render(); break;
+    case "bfDay": S.bf.day = Number(v); render(); break;
+    case "bfSlot": S.bf.slot = v; render(); break;
+    case "submitBooking": submitBooking(); break;
+    case "openBooking": S.bookingId = n; S.declineFor = null; go("booking"); break;
+    case "openConvoOf": { const b = BOOKINGS.find(x => x.id === n); openChat(convoFor(b).id); break; }
+    case "cseg": S.cseg = v; render(); break;
+    case "wseg": S.wseg = v; render(); break;
+
+    // client booking actions
+    case "payRate": S.rateVal = 0; S.rateText = ""; go("rate"); break;
+    case "simDone": { const b = B(); b.status = "done"; logEvent(b, b.kind === "order" ? "Delivered" : "Work finished"); render(); break; }
+    case "resched": { const b = B(); S.resched = { day: b.day, slot: b.slot }; go("reschedule"); break; }
+    case "rsDay": S.resched.day = Number(v); render(); break;
+    case "rsSlot": S.resched.slot = v; render(); break;
+    case "rsSave": {
+      const b = B(), p = people[b.workerId];
+      if (S.resched.day == null || !S.resched.slot) { toast("Pick a day and a time."); break; }
+      b.day = S.resched.day; b.slot = S.resched.slot;
+      const when = `${dayName(b.day)}, ${SLOTS[b.slot].toLowerCase()}`;
+      logEvent(b, `New time asked for: ${when}`);
+      addMsg(convoFor(b), { from: "sys", text: `New time asked for: ${when}` });
+      b.status = "requested";
+      if (!p.account) botConfirm(b);
+      back(); toast(`Sent. ${first(p.name)} will confirm the new time.`); break;
+    }
+    case "cReason": S.cancelReason = v; render(); break;
+    case "cConfirm": {
+      const b = B(); if (!S.cancelReason) break;
+      b.status = "cancelled";
+      logEvent(b, `Cancelled by ${isClient() ? "client" : "worker"}: ${S.cancelReason}`);
+      addMsg(convoFor(b), { from: "sys", text: `Booking cancelled: ${S.cancelReason}` });
+      const r = b.reqId && ALL_REQUESTS.find(x => x.id === b.reqId); if (r) r.status = isClient() ? "closed" : "open";
+      if (isClient()) notifyWorker(b.workerId, ""); else notifyClient(b.clientEmail, `${first(S.me.name)} cancelled: ${S.cancelReason}`);
+      back(); toast("Cancelled."); break;
+    }
+    case "findOthers": {
+      const b = B(), r = b.reqId && ALL_REQUESTS.find(x => x.id === b.reqId);
+      if (r) { r.status = "open"; S.active = r; S.results = null; S.filt = { sort: "best", women: false, top: false, near: false }; go("results"); runMatch(r); } else tab("home");
+      break;
+    }
+    case "rateVal": S.rateVal = Number(v); render(); break;
+    case "pay": {
+      const b = B(), p = people[b.workerId], c = C();
+      if (!S.rateVal) break;
+      if (b.pay === "card" && !c.card) { const d = digits(S.cardNum); if (d.length < 12) { toast("Type your card number to pay by card."); break; } c.card = `Card ending ${d.slice(-4)}`; S.cardNum = ""; }
+      b.status = "paid"; b.rating = S.rateVal; b.review = S.rateText.trim();
+      logEvent(b, `Paid ${money(b.price)} ${b.pay === "cash" ? "in cash" : b.pay === "card" ? "by card" : "by mobile wallet"}`);
+      p.reviews.unshift({ who: `${first(S.user.name)}, ${b.address.area}`, rating: S.rateVal, tags: [], text: b.review });
+      p.rating = Math.round(((p.rating * p.jobs + S.rateVal) / (p.jobs + 1)) * 10) / 10; p.jobs += 1;
+      const r = b.reqId && ALL_REQUESTS.find(x => x.id === b.reqId); if (r) r.status = "closed";
+      addMsg(convoFor(b), { from: "sys", text: `Paid ${money(b.price)}. Thank you!` });
+      back(); toast(`Paid ${money(b.price)} to ${p.name}. Thank you!`); break;
+    }
+
+    // worker booking actions
+    case "declineOpen": S.declineFor = S.bookingId; render(); break;
+    case "wDecline": {
+      const b = B(); b.status = "declined"; logEvent(b, `Declined: ${v}`); S.declineFor = null;
+      addMsg(convoFor(b), { from: "sys", text: `${first(S.me.name)} can't take this booking: ${v}` });
+      const r = b.reqId && ALL_REQUESTS.find(x => x.id === b.reqId); if (r) r.status = "open";
+      notifyClient(b.clientEmail, ""); render(); break;
+    }
+    case "wAccept": {
+      const b = B(); b.status = "confirmed"; logEvent(b, b.kind === "order" ? "Accepted and started making it" : "Accepted");
+      addMsg(convoFor(b), { from: "w", type: "text", text: b.kind === "order" ? `Thank you! I'm starting on it now.` : `Confirmed for ${dayName(b.day).toLowerCase()}, ${SLOTS[b.slot].toLowerCase()}. I'll call before I come.` });
+      toast(b.kind === "order" ? "Accepted. It's in Upcoming." : `Accepted. It's in your schedule for ${dayName(b.day).toLowerCase()}.`); break;
+    }
+    case "wOnway": {
+      const b = B(); b.status = "onway"; logEvent(b, b.kind === "order" ? "Sent for delivery" : "On the way");
+      addMsg(convoFor(b), { from: "w", type: "text", text: b.kind === "order" ? "Your order is on its way to you." : "I'm on my way." }); render(); break;
+    }
+    case "wDone": {
+      const b = B(); b.status = "done"; logEvent(b, b.kind === "order" ? "Delivered" : "Work finished");
+      if (!b.clientEmail) botClientPay(b); render(); break;
+    }
+
+    // chat
+    case "chat": openChat(n); break;
+    case "acceptOffer": acceptOffer(S.convoId, n); break;
+    case "acceptOfferIn": acceptOffer(Number(t.dataset.c), n); break;
+    case "quick": sendChat(v); break;
+    case "ofOpen": { const c = CONVOS.find(x => x.id === S.convoId); S.offerOpen = true; S.offer = { price: openOffer(c)?.price || priceFor(S.me), note: "" }; render(); break; }
+    case "ofClose": S.offerOpen = false; render(); break;
+    case "ofMinus": S.offer.price = Math.max(50, S.offer.price - 50); render(); break;
+    case "ofPlus": S.offer.price += 50; render(); break;
+    case "ofSend": {
+      const c = CONVOS.find(x => x.id === S.convoId);
+      const reqMsg = [...c.msgs].reverse().find(m => m.type === "request");
+      const req = reqMsg?.reqId ? ALL_REQUESTS.find(r => r.id === reqMsg.reqId) : null;
+      const o = sendOffer(c, S.offer.price, req ? (req.label || shortText(req.text)) : S.me.trade, req?.id, S.offer.note.trim());
+      S.offerOpen = false; S.scrollChat = true;
+      if (!c.clientEmail) botClientAccept(c, o, req); else notifyClient(c.clientEmail, "");
+      render(); break;
+    }
+
+    // shop
+    case "cat": S.shopCat = v; render(); break;
+    case "product": S.productId = n; S.pq = 1; S.pnote = ""; go("product"); break;
+    case "pqMinus": S.pq = Math.max(1, S.pq - 1); render(); break;
+    case "pqPlus": S.pq = Math.min(20, S.pq + 1); render(); break;
+    case "addBasket": case "addBasketQty": {
+      const c = C(), qty = a === "addBasketQty" ? S.pq : 1, note = a === "addBasketQty" ? S.pnote.trim() : "";
+      const same = c.basket.find(i => i.productId === n && i.note === note);
+      if (same) same.qty += qty; else c.basket.push({ productId: n, qty, note });
+      if (a === "addBasketQty") { S.pq = 1; S.pnote = ""; back(); }
+      toast(`Added to your basket.`); break;
+    }
+    case "askMaker": {
+      const x = PRODUCTS[n], m = byName(x.maker), c = convo(meEmail(), first(S.user.name), m.id);
+      addMsg(c, { from: "c", type: "text", text: `Hi, I have a question about your ${x.name.toLowerCase()}.` });
+      if (!m.account) later(1500, () => { addMsg(c, { from: "w", type: "text", text: "Hi! Ask me anything. I can change the colours or the size for you." }); notifyClient(c.clientEmail, `New message from ${first(m.name)}.`); });
+      openChat(c.id); break;
+    }
+    case "bMinus": case "bPlus": {
+      const c = C(), it = c.basket[Number(v)];
+      it.qty += a === "bPlus" ? 1 : -1;
+      if (it.qty <= 0) c.basket.splice(Number(v), 1);
+      render(); break;
+    }
+    case "placeOrder": placeOrder(); break;
+
+    // client account
+    case "naOpen": S.meAddrOpen = true; S.na = blankAddr(S.area); render(); break;
+    case "naClose": S.meAddrOpen = false; render(); break;
+    case "naSave": {
+      if (S.na.line.trim().length < 3) { toast("Write the building and street."); break; }
+      C().addresses.push({ ...S.na, label: S.na.label.trim() || "Address" }); S.meAddrOpen = false; toast("Address saved."); break;
+    }
+    case "delAddr": C().addresses.splice(Number(v), 1); render(); break;
+    case "saveCard": { const d = digits(S.cardNum); if (d.length < 12) { toast("That card number looks too short."); break; } C().card = `Card ending ${d.slice(-4)}`; S.cardNum = ""; toast("Card saved."); break; }
+    case "delCard": C().card = null; render(); break;
+    case "openReq": S.reqId = id; go("req"); break;
+    case "reqFind": { const r = ALL_REQUESTS.find(x => x.id === S.reqId); S.active = r; S.results = null; S.filt = { sort: "best", women: false, top: false, near: false }; go("results"); runMatch(r); break; }
+    case "reqEdit": { const r = ALL_REQUESTS.find(x => x.id === S.reqId); S.edit = { text: r.text, area: r.area, reqId: r.id }; go("type"); break; }
+    case "reqClose": { const r = ALL_REQUESTS.find(x => x.id === S.reqId); r.status = "closed"; back(); toast("Request closed."); break; }
+
+    // worker
+    case "avail": S.me.available = !S.me.available; render(); break;
+    case "pminus": case "pplus": { const cur = S.prices[id] ?? priceFor(S.me); S.prices[id] = Math.max(50, cur + (a === "pplus" ? 50 : -50)); render(); break; }
+    case "pass": S.passed.add(id); render(); break;
+    case "sendPrice": {
+      const r = ALL_REQUESTS.find(x => x.id === id), me = S.me, price = S.prices[id] ?? priceFor(me);
+      const c = convo(r.owner, r.client, me.id);
+      if (!c.msgs.some(m => m.type === "request" && m.reqId === r.id)) addMsg(c, { from: "c", type: "request", text: r.ask, reqId: r.id, at: Date.now() - 60000 });
+      const o = sendOffer(c, price, r.label || shortText(r.ask), r.id, "");
+      if (!r.owner) botClientAccept(c, o, r);
+      toast(`Price sent to ${r.client}.`); break;
+    }
+    case "day": S.schedDay = Number(v); render(); break;
+    case "saveMe": {
+      const me = S.me; me.bio = S.meEdit.bio.trim() || me.bio; me.area = S.meEdit.area; me.travel = Number(S.meEdit.travel);
+      S.meEdit = null; toast("Saved. Your jobs list is updated."); scoreJobs(); break;
+    }
+    case "itemToggle": PRODUCTS[n].available = !PRODUCTS[n].available; render(); break;
+    case "itMinus": PRODUCTS[n].price = Math.max(50, PRODUCTS[n].price - 50); render(); break;
+    case "itPlus": PRODUCTS[n].price += 50; render(); break;
+    case "npOpen": S.npOpen = true; S.npErr = ""; render(); break;
+    case "npClose": S.npOpen = false; render(); break;
+    case "npSave": {
+      const np = S.np, price = parseInt(digits(np.price), 10), days = parseInt(digits(np.days), 10);
+      if (np.name.trim().length < 3) { S.npErr = "Give the item a name."; render(); break; }
+      if (!price) { S.npErr = "Add a price."; render(); break; }
+      PRODUCTS.push({ id: PRODUCTS.length, name: np.name.trim(), maker: S.me.name, price, cat: np.cat, days: days || 3, desc: np.desc.trim() || "Handmade to order.", colour: "#E9DDFB", available: true });
+      S.np = { name: "", price: "", cat: "Home", days: "5", desc: "" }; S.npOpen = false; toast("Added to the shop."); break;
+    }
+    case "setupTask": S.setup.step = 2; S.setup.task = Number(t.dataset.i); render(); break;
+    case "setupDone": {
+      const task = [...TASKS, ...WOMEN_TASKS.slice(0, 5)][S.setup.task];
+      S.me = { id: people.length, name: S.user.name, trade: task[0], area: S.setup.area, mode: "in-person", travel: 15, rating: 0, jobs: 0, rate: "ask for a price",
+        group: "user", reviews: [], available: true, woman: false, account: S.user.email, bio: S.setup.bio.trim() || `${task[0]}. ${task[2]}.`, phone: S.user.phone };
+      people.push(S.me); tab("jobs"); scoreJobs(); break;
+    }
+  }
+});
+
+/* ---------- forms and inputs ---------- */
+document.addEventListener("submit", e => {
+  const f = e.target; e.preventDefault();
+  if (f.id === "loginForm") {
+    const ph = digits(S.login.phone), acc = ACCOUNTS.find(x => x.phone && digits(x.phone) === ph);
+    if (!acc || S.login.pin.trim() !== acc.pin) { S.authErr = "That phone number or PIN isn't right. Try again, or tap a demo account below."; render(); return; }
+    login(acc); return;
+  }
+  if (f.id === "signupForm") {
+    const su = S.su;
+    if (su.name.trim().length < 2) { S.authErr = "Please write your name."; render(); return; }
+    if (digits(su.phone).length < 10) { S.authErr = "Please write your full phone number."; render(); return; }
+    if (!/^\d{4}$/.test(su.pin.trim())) { S.authErr = "Your PIN must be 4 numbers."; render(); return; }
+    if (ACCOUNTS.some(x => x.phone && digits(x.phone) === digits(su.phone))) { S.authErr = "This phone number already has an account. Sign in instead."; render(); return; }
+    const acc = { email: "u" + digits(su.phone) + "@wasila.demo", role: su.role, name: su.name.trim(), area: su.area, phone: su.phone.trim(), pin: su.pin.trim() };
+    ACCOUNTS.push(acc); S.su = { role: "client", name: "", phone: "", pin: "", area: "Maadi" }; login(acc); return;
+  }
+  if (f.id === "searchForm") { const q = S.q.trim(); if (q.length < 3) { toast("Write what you need first."); return; } S.q = ""; startSearch("", "pencil", q, false); return; }
+  if (f.id === "shopSearch") { render(); return; }
+  if (f.id === "chatForm") { const t = S.draftMsg.trim(); if (t) sendChat(t); }
+});
+document.addEventListener("input", e => {
+  const el = e.target, p = el.dataset.bind;
+  if (p) setPath(p, el.type === "range" ? Number(el.value) : el.value);
+  if (el.id === "meTravel") { const o = document.getElementById("meTravelOut"); if (o) o.textContent = el.value + " km"; }
+});
+document.addEventListener("change", e => {
+  const el = e.target;
+  if (el.dataset.bind && el.tagName === "SELECT") setPath(el.dataset.bind, el.value);
+  if (el.id === "area") { S.area = el.value; render(); }
+  if (el.id === "chatPhoto" && el.files?.[0]) {
+    const r = new FileReader(); r.onload = () => sendChat("", r.result); r.readAsDataURL(el.files[0]);
+  }
+});
+
+render();
+setTimeout(() => { if (!window.__aiStarted) window.__aiFailed(); }, 20000);
+</script>
+<script type="module">
+// The AI model downloads from huggingface.co. Embedded previews (like a shared link)
+// block that, so only try when the page is opened on its own; otherwise use keyword matching.
+window.__aiStarted = true;
+let embedded = true;
+try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
+if (embedded) {
+  window.__aiFailed();
+} else {
+  try {
+    const { pipeline, env } = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2");
+    env.allowLocalModels = false;
+    env.useBrowserCache = typeof caches !== "undefined" && window.isSecureContext;
+    window.__aiLoaded(pipeline);
+  } catch (e) {
+    window.__aiFailed();
+  }
+}
+</script>
